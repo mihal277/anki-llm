@@ -4,7 +4,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import lscache from "lscache";
-import { Check } from 'lucide-react';
+import { Check } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -16,7 +16,6 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import { SheetClose } from "@/components/ui/sheet";
 import { Input } from "@/components/ui/input";
 
 const OPEN_AI_LSCACHE_KEY = "openAIKey";
@@ -106,7 +105,12 @@ export function SettingsForm() {
         />
         <div className="flex flex-col max-w-max gap-1">
           <Button type="submit">Save</Button>
-          {form.formState.isSubmitSuccessful && <div className="flex flex-row gap-1"><span>Saved</span><Check /></div>}
+          {form.formState.isSubmitSuccessful && (
+            <div className="flex flex-row gap-1">
+              <span>Saved</span>
+              <Check />
+            </div>
+          )}
         </div>
       </form>
     </Form>

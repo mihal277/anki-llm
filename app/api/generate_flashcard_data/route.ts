@@ -15,12 +15,9 @@ import {
   ChatCompletionUserMessageParam,
 } from "openai/resources/index.mjs";
 
-const openai = new OpenAI({
-  apiKey: process.env.OPEN_AI_KEY,
-});
-
 export async function POST(request: NextRequest) {
-  const { word_or_expression, meaning, language_str } = await request.json();
+  const { word_or_expression, meaning, language_str, api_key } =
+    await request.json();
   const language = getLanguage(language_str);
 
   const messages = [
@@ -69,6 +66,7 @@ export async function POST(request: NextRequest) {
     },
   ];
 
+  const openai = new OpenAI({ apiKey: api_key });
   const response = await openai.chat.completions.create({
     model: "gpt-4",
     messages: messages as ChatCompletionUserMessageParam[],
@@ -79,8 +77,6 @@ export async function POST(request: NextRequest) {
 
   if (responseMessage.tool_calls) {
     const toolCall = responseMessage.tool_calls[0];
-    // const functionArgs = JSON.parse(toolCall.function.arguments);
-
     const headers = new Headers();
     headers.set("Content-Type", "application/json");
     return new NextResponse(toolCall.function.arguments, {
