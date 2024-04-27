@@ -15,9 +15,7 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import {
-  SheetClose,
-} from "@/components/ui/sheet";
+import { SheetClose } from "@/components/ui/sheet";
 import { Input } from "@/components/ui/input";
 
 const OPEN_AI_LSCACHE_KEY = "openAIKey";
@@ -33,13 +31,15 @@ const formSchema = z.object({
     .min(25, {
       message: "Play HT user id too short.",
     })
-    .optional().or(z.literal('')),
+    .optional()
+    .or(z.literal("")),
   playHtKey: z
     .string()
     .min(30, {
       message: "Play HT key too short.",
     })
-    .optional().or(z.literal('')),
+    .optional()
+    .or(z.literal("")),
 });
 
 export function SettingsForm() {

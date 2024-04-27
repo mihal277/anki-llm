@@ -10,6 +10,7 @@ import { AnkiNote } from "./anki/note";
 import { NormalizedExampleSentence } from "./anki/normalizedExampleSentence";
 import { AudioDataRequest } from "./audio";
 import SettingsSheet from "@/components/settings/settings-sheet";
+import { ModeToggle } from "@/components/mode-toggle";
 
 function constructFlashCard1Front(word: string, flashCardData: any) {
   return `${flashCardData.easy_definition}`;
@@ -77,114 +78,7 @@ export default function Home() {
   return (
     <>
       <SettingsSheet />
-      <button
-        onClick={downloadMultipleFilesAndZipThem}
-        style={{
-          marginRight: "10px",
-          marginBottom: "10px",
-        }}
-      >
-        Download
-      </button>
-
-      <h2>Select language</h2>
-      <button
-        onClick={() => setLanguageStr("Spanish")}
-        style={{
-          fontWeight: languageStr === "Spanish" ? "bold" : "normal",
-          marginRight: "10px",
-          marginBottom: "10px",
-        }}
-      >
-        Spanish
-      </button>
-      <br />
-
-      <input
-        type="text"
-        value={playHTUserId}
-        onChange={(e) => setPlayHTUserId(e.target.value)}
-        placeholder="Enter play ht user id"
-        style={{
-          marginBottom: "10px",
-          backgroundColor: "black",
-          color: "white",
-        }}
-      />
-
-      <br />
-
-      <input
-        type="text"
-        value={playHTKey}
-        onChange={(e) => setPlayHTKey(e.target.value)}
-        placeholder="Enter play ht key"
-        style={{
-          marginBottom: "10px",
-          backgroundColor: "black",
-          color: "white",
-        }}
-      />
-
-      <br />
-
-      <input
-        type="text"
-        value={wordOrExpression}
-        onChange={(e) => setWordOrExpression(e.target.value)}
-        placeholder="Enter word"
-        style={{
-          marginBottom: "10px",
-          backgroundColor: "black",
-          color: "white",
-        }}
-      />
-
-      <br />
-
-      <input
-        type="text"
-        value={definition}
-        onChange={(e) => setDefinition(e.target.value)}
-        placeholder="Enter definition"
-        style={{
-          marginBottom: "10px",
-          backgroundColor: "black",
-          color: "white",
-        }}
-      />
-
-      <br />
-
-      <button onClick={onGenerateClick}>Generate</button>
-
-      {ankiNote !== undefined && (
-        <div>
-          <h3>Flashcard Data:</h3>
-          {ankiNote.cards.map((card, index) => (
-            <div key={index}>
-              <input
-                type="text"
-                value={card.front.contentHTML}
-                style={{
-                  marginBottom: "10px",
-                  backgroundColor: "black",
-                  color: "white",
-                }}
-              />
-              <input
-                type="text"
-                value={card.back.contentHTML}
-                style={{
-                  marginBottom: "10px",
-                  backgroundColor: "black",
-                  color: "white",
-                }}
-              />
-            </div>
-          ))}
-        </div>
-      )}
+      <ModeToggle />
     </>
   );
 }
