@@ -8,6 +8,8 @@ import { saveAs } from "file-saver";
 import { getNote as getNoteSpanish } from "./anki/spanish";
 import { AnkiNote } from "./anki/note";
 import { NormalizedExampleSentence } from "./anki/normalizedExampleSentence";
+import { AudioDataRequest } from "./audio";
+import SettingsSheet from "@/components/settings/settings-sheet";
 
 function constructFlashCard1Front(word: string, flashCardData: any) {
   return `${flashCardData.easy_definition}`;
@@ -37,27 +39,9 @@ export default function Home() {
   const [playHTUserId, setPlayHTUserId] = useState("");
   const [playHTKey, setPlayHTKey] = useState("");
 
-  //todo async
   const downloadMultipleFilesAndZipThem = async (
-    expressionsToGenerate: string[],
+    audioDataRequests: AudioDataRequest[],
   ) => {
-    expressionsToGenerate = [
-      "Yo soy un chico",
-      "Espero que te mejores pronto.",
-    ];
-
-    const audioDataRequests = expressionsToGenerate.map(
-      (expressionToGenerate) => {
-        return {
-          content: expressionToGenerate,
-          language: "Spanish",
-          mp3Name: `${uuid()}.mp3`,
-        };
-      },
-    );
-
-    console.log(audioDataRequests);
-
     const response = await fetch("/api/generate_audio", {
       method: "POST",
       body: JSON.stringify({
@@ -67,7 +51,6 @@ export default function Home() {
       }),
     });
     const blob = await response.blob();
-
     saveAs(blob, "mp3s.zip");
   };
 
@@ -93,6 +76,7 @@ export default function Home() {
 
   return (
     <>
+      <SettingsSheet />
       <button
         onClick={downloadMultipleFilesAndZipThem}
         style={{
