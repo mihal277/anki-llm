@@ -12,26 +12,6 @@ import { AudioDataRequest } from "./audio";
 import SettingsSheet from "@/components/settings/settings-sheet";
 import { ModeToggle } from "@/components/mode-toggle";
 
-function constructFlashCard1Front(word: string, flashCardData: any) {
-  return `${flashCardData.easy_definition}`;
-}
-
-function constructFlashCard1Back(word: string, flashCardData: any) {
-  return `
-    ${word} ${flashCardData.ipa_pronuncation}
-  `;
-}
-
-function constructFlashCard2Front(word: string, flashCardData: any) {
-  return `${flashCardData.simple_example_sentence.replace("<w>", "").replace("</w>", "")}`;
-}
-
-function constructFlashCard2Back(word: string, flashCardData: any) {
-  return `
-    ${word} ${flashCardData.ipa_pronuncation}
-  `;
-}
-
 export default function Home() {
   const [languageStr, setLanguageStr] = useState("");
   const [wordOrExpression, setWordOrExpression] = useState("");
@@ -75,10 +55,5 @@ export default function Home() {
     setAnkiNote(spanishNote);
   };
 
-  return (
-    <>
-      <SettingsSheet />
-      <ModeToggle />
-    </>
-  );
+  return <></>;
 }

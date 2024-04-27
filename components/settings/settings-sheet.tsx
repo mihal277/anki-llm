@@ -1,6 +1,5 @@
 import {
   Sheet,
-  SheetClose,
   SheetContent,
   SheetDescription,
   SheetHeader,
@@ -9,12 +8,15 @@ import {
 } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
 import { SettingsForm } from "./settings-form";
+import { Settings } from "lucide-react";
 
 export default function SettingsSheet() {
   return (
     <Sheet>
       <SheetTrigger asChild>
-        <Button variant="outline">Set API keys</Button>
+        <Button variant="outline" size="icon">
+          <Settings className="h-[1.2rem] w-[1.2rem] rotate-0 scale-100 transition-all" />
+        </Button>
       </SheetTrigger>
       <SheetContent>
         <SheetHeader>
