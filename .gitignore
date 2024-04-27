@@ -5,8 +5,9 @@ logs
 public
 .cache
 .vscode
-.DS_Store
+.DS_Store   
 .idea
 .next
 yarn-error.log
 npm-debug.log
+.env.local
