@@ -3,7 +3,6 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
-import lscache from "lscache";
 import { Check } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
@@ -17,10 +16,13 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-
-const OPEN_AI_LSCACHE_KEY = "openAIKey";
-const PLAY_HT_USER_ID_LSCACHE_KEY = "playHtUserId";
-const PLAY_HT_KEY_LSCACHE_KEY = "playHtKey";
+import {
+  OPEN_AI_STORAGE_KEY,
+  PLAY_HT_KEY_STORAGE_KEY,
+  PLAY_HT_USER_ID_STORAGE_KEY,
+  addToStorage,
+  getFromStorage,
+} from "@/app/storage";
 
 const formSchema = z.object({
   openAIKey: z.string().min(50, {
@@ -46,16 +48,16 @@ export function SettingsForm() {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      openAIKey: lscache.get(OPEN_AI_LSCACHE_KEY) ?? "",
-      playHtUserId: lscache.get(PLAY_HT_USER_ID_LSCACHE_KEY) ?? "",
-      playHtKey: lscache.get(PLAY_HT_KEY_LSCACHE_KEY) ?? "",
+      openAIKey: getFromStorage(OPEN_AI_STORAGE_KEY) ?? "",
+      playHtUserId: getFromStorage(PLAY_HT_USER_ID_STORAGE_KEY) ?? "",
+      playHtKey: getFromStorage(PLAY_HT_KEY_STORAGE_KEY) ?? "",
     },
   });
 
   function onSubmit(values: z.infer<typeof formSchema>) {
-    lscache.set(OPEN_AI_LSCACHE_KEY, values.openAIKey);
-    lscache.set(PLAY_HT_USER_ID_LSCACHE_KEY, values.playHtUserId);
-    lscache.set(PLAY_HT_KEY_LSCACHE_KEY, values.playHtKey);
+    addToStorage(OPEN_AI_STORAGE_KEY, values.openAIKey);
+    addToStorage(PLAY_HT_USER_ID_STORAGE_KEY, values.playHtUserId);
+    addToStorage(PLAY_HT_KEY_STORAGE_KEY, values.playHtKey);
   }
 
   return (
