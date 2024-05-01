@@ -1,7 +1,8 @@
-import { Language } from "../language";
+import { Language } from "@/app/language";
 import { ClozeSentenceAnkiCard, SimpleTranslationAnkiCard } from "./card";
-import { NormalizedExampleSentence } from "./normalizedExampleSentence";
-import { AnkiNote, AnkiNoteType } from "./note";
+import { NormalizedExampleSentence } from "@/app/anki/normalized-example-sentence";
+import { AnkiNote, AnkiNoteType } from "@/app/anki/note";
+import { v4 as uuid } from "uuid";
 
 export const getNote = (
   wordOrExpression: string,
@@ -21,5 +22,11 @@ export const getNote = (
     Language.Spanish,
   );
 
-  return new AnkiNote(AnkiNoteType.TwoBasicAndReversed, [card1, card2]);
+  return new AnkiNote(
+    uuid(),
+    wordOrExpression,
+    easyDefinition,
+    AnkiNoteType.TwoBasicAndReversed,
+    [card1, card2],
+  );
 };
