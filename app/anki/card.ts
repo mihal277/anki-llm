@@ -1,5 +1,5 @@
 import { Language } from "../language";
-import { NormalizedExampleSentence } from "./normalizedExampleSentence";
+import { NormalizedExampleSentence } from "./normalized-example-sentence";
 import { AnkiCardSideData } from "./types";
 import { v4 as uuid } from "uuid";
 

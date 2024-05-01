@@ -13,6 +13,7 @@ import { DECKS_STORAGE_KEY, addToStorage } from "@/app/storage";
 import { toast } from "@/components/ui/use-toast";
 import { Language } from "@/app/language";
 import { DeleteDeckAlert } from "./delete-deck-alert";
+import Link from "next/link";
 
 interface DecksTableProps {
   ankiDecks: AnkiDeck[];
@@ -65,9 +66,16 @@ export function DecksTable({ ankiDecks, setAnkiDecks }: DecksTableProps) {
             <TableCell>{ankiDeck.language.valueOf()}</TableCell>
             <TableCell>
               <div className="flex justify-center">
-                <Button variant="outline">
-                  <FilePlus2 />
-                </Button>
+                <Link
+                  href={{
+                    pathname: "/create-notes",
+                    query: { deckId: ankiDeck.id },
+                  }}
+                >
+                  <Button variant="outline">
+                    <FilePlus2 />
+                  </Button>
+                </Link>
               </div>
             </TableCell>
             <TableCell>

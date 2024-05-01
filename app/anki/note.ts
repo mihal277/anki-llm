@@ -10,10 +10,23 @@ export enum AnkiNoteType {
 }
 
 export class AnkiNote {
+  id: string;
+  wordOrExpression: string;
+  definition: string;
+
   type: AnkiNoteType;
   cards: AnkiCard[];
 
-  constructor(type: AnkiNoteType, cards: AnkiCard[]) {
+  constructor(
+    id: string,
+    wordOrExpression: string,
+    definition: string,
+    type: AnkiNoteType,
+    cards: AnkiCard[],
+  ) {
+    this.id = id;
+    this.wordOrExpression = wordOrExpression;
+    this.definition = definition;
     this.type = type;
     this.cards = cards;
   }
