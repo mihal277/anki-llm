@@ -3,13 +3,13 @@
 import { NotesCreationInputForm } from "@/components/notes-creation/input-form";
 import { NotesTable } from "@/components/notes-creation/notes-table";
 import { useSearchParams } from "next/navigation";
-import { useState } from "react";
+import { Suspense, useState } from "react";
 import { DECKS_STORAGE_KEY, getFromStorage } from "@/app/storage";
 import { AnkiDeck } from "@/app/anki/deck";
 import { AnkiNote } from "@/app/anki/note";
 import { EditableAnkiNote } from "@/components/notes-creation/editable-anki-note";
 
-export default function CreateNotesPage() {
+function CreateNotesPageContent() {
   const searchParams = useSearchParams();
   const deckId = searchParams.get("deckId");
   const [notes, setNotes] = useState(
@@ -45,5 +45,13 @@ export default function CreateNotesPage() {
         </div>
       </div>
     </>
+  );
+}
+
+export default function CreateNotesPage() {
+  return (
+   <Suspense>
+      <CreateNotesPageContent />
+    </Suspense>
   );
 }
