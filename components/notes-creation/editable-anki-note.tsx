@@ -62,17 +62,15 @@ function CardBackInput({
 }
 
 interface EditableAnkiNoteProps {
-  isGenerationRunning: boolean;
   ankiNote: AnkiNote;
   setGeneratedNote: (note: AnkiNote) => void;
 }
 
 export function EditableAnkiNote({
-  isGenerationRunning,
   ankiNote,
   setGeneratedNote,
 }: EditableAnkiNoteProps) {
-  return !isGenerationRunning ? (
+  return (
     <div>
       {ankiNote.cards.map((card, i) => (
         <div key={i}>
@@ -91,7 +89,5 @@ export function EditableAnkiNote({
         </div>
       ))}
     </div>
-  ) : (
-    <></>
   );
 }
