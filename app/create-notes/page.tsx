@@ -4,16 +4,18 @@ import { NotesCreationInputForm } from "@/components/notes-creation/input-form";
 import { NotesTable } from "@/components/notes-creation/notes-table";
 import { useSearchParams } from "next/navigation";
 import { Suspense, useState } from "react";
-import { getNotesOfGivenDeck } from "@/app/storage";
+import { getNotesOfGivenDeckFromStorage } from "@/app/storage";
 import { AnkiNote } from "@/app/anki/note";
 import { AnkiNoteEditor } from "@/components/notes-creation/anki-note-editor";
 
 function CreateNotesPageContent() {
   const searchParams = useSearchParams();
   const deckId = searchParams.get("deckId")!!;
-  const [notesInDeck, setNotesInDeck] = useState(getNotesOfGivenDeck(deckId));
+  const [notesInDeck, setNotesInDeck] = useState(
+    getNotesOfGivenDeckFromStorage(deckId),
+  );
   const [isGenerationRunning, setIsGenerationRunning] = useState(false);
-  const [generatedNote, setGeneratedNote] = useState<AnkiNote>();
+  const [generatedNote, setGeneratedNote] = useState<AnkiNote | undefined>();
 
   const isGenerated = generatedNote !== undefined;
   const shouldDisplayInputForm = !(isGenerationRunning || isGenerated);
