@@ -41,7 +41,11 @@ function CreateNotesPageContent() {
           )}
         </div>
         <div className="w-1/3">
-          <NotesTable ankiNotes={notesInDeck} />
+          <NotesTable
+            ankiNotes={notesInDeck}
+            setNotes={setNotesInDeck}
+            deckId={deckId}
+          />
         </div>
       </div>
     </>
