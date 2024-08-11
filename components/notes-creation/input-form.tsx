@@ -81,7 +81,9 @@ export function NotesCreationInputForm({
             </FormItem>
           )}
         />
-        <Button type="submit">Create</Button>
+        <Button type="submit" variant="outline">
+          Create
+        </Button>
       </form>
     </Form>
   );
