@@ -1,7 +1,7 @@
 import { AnkiNote } from "@/app/anki/note";
 import { EditableAnkiNote } from "./editable-anki-note";
 import { Button } from "../ui/button";
-import { setNotesInGivenDeck } from "@/app/storage";
+import { saveNotesInGivenDeckInStorage } from "@/app/storage";
 import { useSearchParams } from "next/navigation";
 
 const saveNote = (
@@ -9,17 +9,19 @@ const saveNote = (
   ankiNote: AnkiNote,
   notesInDeck: AnkiNote[],
   setNotesInDeck: (notes: AnkiNote[]) => void,
+  setGeneratedNote: (note: AnkiNote | undefined) => void,
 ) => {
   const updatedNotesInDeck = [...notesInDeck, ankiNote];
   setNotesInDeck(updatedNotesInDeck);
-  setNotesInGivenDeck(deckId, updatedNotesInDeck);
+  saveNotesInGivenDeckInStorage(deckId, updatedNotesInDeck);
+  setGeneratedNote(undefined);
 };
 
 interface AnkiNoteEditorProps {
   ankiNote: AnkiNote;
   notesInDeck: AnkiNote[];
   setNotesInDeck: (notes: AnkiNote[]) => void;
-  setGeneratedNote: (note: AnkiNote) => void;
+  setGeneratedNote: (note: AnkiNote | undefined) => void;
 }
 
 export function AnkiNoteEditor({
@@ -38,7 +40,15 @@ export function AnkiNoteEditor({
         setGeneratedNote={setGeneratedNote}
       />
       <Button
-        onClick={() => saveNote(deckId, ankiNote, otherNotes, setOtherNotes)}
+        onClick={() =>
+          saveNote(
+            deckId,
+            ankiNote,
+            otherNotes,
+            setOtherNotes,
+            setGeneratedNote,
+          )
+        }
       >
         Save Note
       </Button>

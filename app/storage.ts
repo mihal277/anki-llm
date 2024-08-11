@@ -19,13 +19,16 @@ export const saveInStorage = (key: string, value: any) => {
   lscache.set(key, value);
 };
 
-export const getNotesOfGivenDeck = (deckId: string): any => {
+export const getNotesOfGivenDeckFromStorage = (deckId: string): any => {
   const decks: AnkiDeck[] = getFromStorage(DECKS_STORAGE_KEY, []);
   const deck = decks.find((deck: any) => deck.id === deckId);
   return deck?.notes ?? [];
 };
 
-export const setNotesInGivenDeck = (deckId: string, notes: AnkiNote[]) => {
+export const saveNotesInGivenDeckInStorage = (
+  deckId: string,
+  notes: AnkiNote[],
+) => {
   const decks: AnkiDeck[] = getFromStorage(DECKS_STORAGE_KEY, []);
   const newDecks = decks.map((deck) => {
     if (deck.id === deckId) {
