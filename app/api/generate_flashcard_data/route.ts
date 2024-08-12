@@ -68,7 +68,7 @@ export async function POST(request: NextRequest) {
 
   const openai = new OpenAI({ apiKey: api_key });
   const response = await openai.chat.completions.create({
-    model: "gpt-4",
+    model: "gpt-4o-mini",
     messages: messages as ChatCompletionUserMessageParam[],
     tools: tools as ChatCompletionTool[],
     tool_choice: "auto",
