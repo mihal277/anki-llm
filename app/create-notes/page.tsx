@@ -3,12 +3,19 @@
 import { NotesCreationInputForm } from "@/components/notes-creation/input-form";
 import { NotesTable } from "@/components/notes-creation/notes-table";
 import { useSearchParams } from "next/navigation";
-import { Suspense, useState } from "react";
+import { Suspense, useEffect, useState } from "react";
 import { getNotesOfGivenDeckFromStorage } from "@/app/storage";
 import { AnkiNote } from "@/app/anki/note";
 import { AnkiNoteEditor } from "@/components/notes-creation/anki-note-editor";
 
 function CreateNotesPageContent() {
+  // preventing hydration errors: https://nextjs.org/docs/messages/react-hydration-error
+  const [isClient, setIsClient] = useState(false);
+
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
+
   const searchParams = useSearchParams();
   const deckId = searchParams.get("deckId")!!;
   const [notesInDeck, setNotesInDeck] = useState(
@@ -41,11 +48,13 @@ function CreateNotesPageContent() {
           )}
         </div>
         <div className="w-1/3">
-          <NotesTable
-            ankiNotes={notesInDeck}
-            setNotes={setNotesInDeck}
-            deckId={deckId}
-          />
+          {isClient && (
+            <NotesTable
+              ankiNotes={notesInDeck}
+              setNotes={setNotesInDeck}
+              deckId={deckId}
+            />
+          )}
         </div>
       </div>
     </>
