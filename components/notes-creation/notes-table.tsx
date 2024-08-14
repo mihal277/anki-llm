@@ -18,6 +18,12 @@ interface NotesTableProps {
 }
 
 export function NotesTable({ ankiNotes, setNotes, deckId }: NotesTableProps) {
+  const handleDeleteNote = (noteId: string) => {
+    const updatedNotes = ankiNotes.filter((note) => note.id !== noteId);
+    setNotes(updatedNotes);
+    saveNotesInGivenDeckInStorage(deckId, updatedNotes);
+  };
+
   return (
     <Table>
       <TableHeader>
@@ -35,13 +41,7 @@ export function NotesTable({ ankiNotes, setNotes, deckId }: NotesTableProps) {
             <TableCell>
               <Button
                 variant="outline"
-                onClick={() => {
-                  const updatedNotes = ankiNotes.filter(
-                    (note) => note.id !== ankiNote.id,
-                  );
-                  setNotes(updatedNotes);
-                  saveNotesInGivenDeckInStorage(deckId, updatedNotes);
-                }}
+                onClick={() => handleDeleteNote(ankiNote.id)}
               >
                 <Trash2 />
               </Button>

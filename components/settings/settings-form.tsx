@@ -17,6 +17,7 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import {
+  ELEVENLABS_API_KEY_STORAGE_KEY,
   OPEN_AI_STORAGE_KEY,
   PLAY_HT_KEY_STORAGE_KEY,
   PLAY_HT_USER_ID_STORAGE_KEY,
@@ -42,6 +43,13 @@ const formSchema = z.object({
     })
     .optional()
     .or(z.literal("")),
+  elevenLabsAPIKey: z
+    .string()
+    .length(32, {
+      message: "Elevenlabs API key has 32 characters.",
+    })
+    .optional()
+    .or(z.literal("")),
 });
 
 export function SettingsForm() {
@@ -51,6 +59,7 @@ export function SettingsForm() {
       openAIKey: getFromStorage(OPEN_AI_STORAGE_KEY) ?? "",
       playHtUserId: getFromStorage(PLAY_HT_USER_ID_STORAGE_KEY) ?? "",
       playHtKey: getFromStorage(PLAY_HT_KEY_STORAGE_KEY) ?? "",
+      elevenLabsAPIKey: getFromStorage(ELEVENLABS_API_KEY_STORAGE_KEY) ?? "",
     },
   });
 
@@ -58,6 +67,7 @@ export function SettingsForm() {
     addToStorage(OPEN_AI_STORAGE_KEY, values.openAIKey);
     addToStorage(PLAY_HT_USER_ID_STORAGE_KEY, values.playHtUserId);
     addToStorage(PLAY_HT_KEY_STORAGE_KEY, values.playHtKey);
+    addToStorage(ELEVENLABS_API_KEY_STORAGE_KEY, values.elevenLabsAPIKey);
   }
 
   return (
@@ -97,6 +107,20 @@ export function SettingsForm() {
           render={({ field }) => (
             <FormItem>
               <FormLabel>Play.ht key</FormLabel>
+              <FormControl>
+                <Input type="password" {...field} />
+              </FormControl>
+              <FormDescription>optional</FormDescription>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name="elevenLabsAPIKey"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Elevenlabs API key</FormLabel>
               <FormControl>
                 <Input type="password" {...field} />
               </FormControl>
