@@ -16,3 +16,14 @@ export const getLanguage = (language: string): Language => {
       throw new Error(`Language ${language} not supported`);
   }
 };
+
+export const languageToISO6391 = (language: Language): string => {
+  switch (language) {
+    case Language.Spanish:
+      return "es";
+    case Language.English:
+      return "en";
+    case Language.German:
+      return "de";
+  }
+};

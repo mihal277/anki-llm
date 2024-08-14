@@ -28,10 +28,18 @@ export function ankiNoteToCSVRow(ankiNote: AnkiNote, deckName: string): string {
   return [guid, noteType, deckName, ...cardColumns, tags].join("\t");
 }
 
-export function getAllAudioDataOfAnkiNote(
+function getAllAudioDataRequestsOfAnkiNote(
   ankiNote: AnkiNote,
 ): AudioDataRequest[] {
   return ankiNote.cards
     .map((card) => card.front.audioData.concat(card.back.audioData))
+    .reduce((acc, val) => acc.concat(val), []);
+}
+
+export function getAllDataRequestsOfAnkiNotes(
+  ankiNotes: AnkiNote[],
+): AudioDataRequest[] {
+  return ankiNotes
+    .map((ankiNote) => getAllAudioDataRequestsOfAnkiNote(ankiNote))
     .reduce((acc, val) => acc.concat(val), []);
 }

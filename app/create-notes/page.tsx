@@ -4,9 +4,34 @@ import { NotesCreationInputForm } from "@/components/notes-creation/input-form";
 import { NotesTable } from "@/components/notes-creation/notes-table";
 import { useSearchParams } from "next/navigation";
 import { Suspense, useEffect, useState } from "react";
-import { getNotesOfGivenDeckFromStorage } from "@/app/storage";
-import { AnkiNote } from "@/app/anki/note";
+import {
+  ELEVENLABS_API_KEY_STORAGE_KEY,
+  getFromStorage,
+  getNotesOfGivenDeckFromStorage,
+} from "@/app/storage";
+import { AnkiNote, getAllDataRequestsOfAnkiNotes } from "@/app/anki/note";
 import { AnkiNoteEditor } from "@/components/notes-creation/anki-note-editor";
+import { Button } from "@/components/ui/button";
+import { Download } from "lucide-react";
+
+async function handleDownloadAnkiDeck(notes: AnkiNote[]) {
+  const response = await fetch("/api/generate_audio_elevenlabs", {
+    method: "POST",
+    body: JSON.stringify({
+      audioDataRequests: getAllDataRequestsOfAnkiNotes(notes),
+      elevenLabsAPIKey: getFromStorage(ELEVENLABS_API_KEY_STORAGE_KEY),
+    }),
+  });
+  // download payload as a file:
+  const blob = await response.blob();
+  const url = window.URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = "sounds.zip";
+  document.body.appendChild(a);
+  a.click();
+  window.URL.revokeObjectURL(url);
+}
 
 function CreateNotesPageContent() {
   // preventing hydration errors: https://nextjs.org/docs/messages/react-hydration-error
@@ -49,11 +74,19 @@ function CreateNotesPageContent() {
         </div>
         <div className="w-1/3">
           {isClient && (
-            <NotesTable
-              ankiNotes={notesInDeck}
-              setNotes={setNotesInDeck}
-              deckId={deckId}
-            />
+            <div>
+              <NotesTable
+                ankiNotes={notesInDeck}
+                setNotes={setNotesInDeck}
+                deckId={deckId}
+              />
+              <Button
+                variant="outline"
+                onClick={() => handleDownloadAnkiDeck(notesInDeck)}
+              >
+                <Download />
+              </Button>
+            </div>
           )}
         </div>
       </div>
