@@ -2,7 +2,7 @@ import { Language } from "@/app/language";
 import { AnkiNote } from "@/app/anki/note";
 import { OPEN_AI_STORAGE_KEY, getFromStorage } from "@/app/storage";
 import { getNote as getSpanishNote } from "@/app/anki/spanish";
-import { NormalizedExampleSentence } from "@/app/anki/normalized-example-sentence";
+import { getNormalizedExampleSentenceWithWordTokens } from "./normalized-example-sentence";
 
 export const generateAnkiNote = async (
   wordOrExpression: string,
@@ -28,6 +28,6 @@ export const generateAnkiNote = async (
     wordOrExpression,
     responseJson.ipa_pronuncation,
     responseJson.easy_definition,
-    new NormalizedExampleSentence(responseJson.simple_example_sentence),
+    responseJson.simple_example_sentence,
   );
 };
