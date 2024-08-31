@@ -1,32 +1,37 @@
 import { Language } from "@/app/language";
-import { ClozeSentenceAnkiCard, SimpleTranslationAnkiCard } from "./card";
-import { NormalizedExampleSentence } from "@/app/anki/normalized-example-sentence";
 import { AnkiNote, AnkiNoteType } from "@/app/anki/note";
 import { v4 as uuid } from "uuid";
+import {
+  AnkiCard,
+  getBackForClozeSentenceAnkiCard,
+  getBackForSimpleTranslationAnkiCard,
+  getFrontForClozeSentenceAnkiCard,
+  getFrontForSimpleTranslationAnkiCard,
+} from "./card";
 
 export const getNote = (
   wordOrExpression: string,
   pronunciation: string,
   easyDefinition: string,
-  exampleSentence: NormalizedExampleSentence,
+  rawExampleSentence: string,
 ): AnkiNote => {
-  const card1 = new SimpleTranslationAnkiCard(
-    wordOrExpression,
-    pronunciation,
-    easyDefinition,
-    Language.Spanish,
-  );
-  const card2 = new ClozeSentenceAnkiCard(
-    exampleSentence,
-    easyDefinition,
-    Language.Spanish,
-  );
-
-  return new AnkiNote(
-    uuid(),
-    wordOrExpression,
-    easyDefinition,
-    AnkiNoteType.TwoBasicAndReversed,
-    [card1, card2],
-  );
+  const card1: AnkiCard = {
+    front: getFrontForSimpleTranslationAnkiCard(easyDefinition),
+    back: getBackForSimpleTranslationAnkiCard(
+      easyDefinition,
+      pronunciation,
+      Language.Spanish,
+    ),
+  };
+  const card2: AnkiCard = {
+    front: getFrontForClozeSentenceAnkiCard(rawExampleSentence, easyDefinition),
+    back: getBackForClozeSentenceAnkiCard(rawExampleSentence, Language.Spanish),
+  };
+  return {
+    id: uuid(),
+    wordOrExpression: wordOrExpression,
+    definition: easyDefinition,
+    type: AnkiNoteType.TwoBasicAndReversed,
+    cards: [card1, card2],
+  };
 };
