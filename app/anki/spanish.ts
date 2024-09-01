@@ -18,7 +18,7 @@ export const getNote = (
   const card1: AnkiCard = {
     front: getFrontForSimpleTranslationAnkiCard(easyDefinition),
     back: getBackForSimpleTranslationAnkiCard(
-      easyDefinition,
+      wordOrExpression,
       pronunciation,
       Language.Spanish,
     ),
