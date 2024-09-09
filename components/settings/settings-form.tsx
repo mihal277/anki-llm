@@ -19,8 +19,6 @@ import { Input } from "@/components/ui/input";
 import {
   ELEVENLABS_API_KEY_STORAGE_KEY,
   OPEN_AI_STORAGE_KEY,
-  PLAY_HT_KEY_STORAGE_KEY,
-  PLAY_HT_USER_ID_STORAGE_KEY,
   addToStorage,
   getFromStorage,
 } from "@/app/storage";
@@ -29,20 +27,6 @@ const formSchema = z.object({
   openAIKey: z.string().min(50, {
     message: "Open AI API key too short.",
   }),
-  playHtUserId: z
-    .string()
-    .min(25, {
-      message: "Play HT user id too short.",
-    })
-    .optional()
-    .or(z.literal("")),
-  playHtKey: z
-    .string()
-    .min(30, {
-      message: "Play HT key too short.",
-    })
-    .optional()
-    .or(z.literal("")),
   elevenLabsAPIKey: z
     .string()
     .length(32, {
@@ -57,16 +41,12 @@ export function SettingsForm() {
     resolver: zodResolver(formSchema),
     defaultValues: {
       openAIKey: getFromStorage(OPEN_AI_STORAGE_KEY) ?? "",
-      playHtUserId: getFromStorage(PLAY_HT_USER_ID_STORAGE_KEY) ?? "",
-      playHtKey: getFromStorage(PLAY_HT_KEY_STORAGE_KEY) ?? "",
       elevenLabsAPIKey: getFromStorage(ELEVENLABS_API_KEY_STORAGE_KEY) ?? "",
     },
   });
 
   function onSubmit(values: z.infer<typeof formSchema>) {
     addToStorage(OPEN_AI_STORAGE_KEY, values.openAIKey);
-    addToStorage(PLAY_HT_USER_ID_STORAGE_KEY, values.playHtUserId);
-    addToStorage(PLAY_HT_KEY_STORAGE_KEY, values.playHtKey);
     addToStorage(ELEVENLABS_API_KEY_STORAGE_KEY, values.elevenLabsAPIKey);
   }
 
@@ -83,34 +63,6 @@ export function SettingsForm() {
                 <Input type="password" {...field} />
               </FormControl>
               <FormDescription>required</FormDescription>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name="playHtUserId"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Play.ht user ID</FormLabel>
-              <FormControl>
-                <Input type="password" {...field} />
-              </FormControl>
-              <FormDescription>optional</FormDescription>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name="playHtKey"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Play.ht key</FormLabel>
-              <FormControl>
-                <Input type="password" {...field} />
-              </FormControl>
-              <FormDescription>optional</FormDescription>
               <FormMessage />
             </FormItem>
           )}
