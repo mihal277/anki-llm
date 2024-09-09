@@ -3,8 +3,6 @@ import { AnkiDeck } from "./anki/deck";
 import { AnkiNote } from "./anki/note";
 
 export const OPEN_AI_STORAGE_KEY = "openAIKey";
-export const PLAY_HT_USER_ID_STORAGE_KEY = "playHtUserId";
-export const PLAY_HT_KEY_STORAGE_KEY = "playHtKey";
 export const ELEVENLABS_API_KEY_STORAGE_KEY = "elevenLabsAPIKey";
 export const DECKS_STORAGE_KEY = "decks";
 
