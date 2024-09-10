@@ -1,4 +1,9 @@
-import { NormalizedExampleSentence } from "../app/anki/anki";
+import {
+  getNormalizedExampleSentence,
+  getNormalizedExampleSentenceWithBoldWord,
+  getNormalizedExampleSentenceWithWordTokens,
+  getNormalizedExampleSentenceWithWordUnderscored,
+} from "@/app/anki/normalized-example-sentence";
 
 const errorMsg = [
   "Invalid sentence format.",
@@ -6,63 +11,65 @@ const errorMsg = [
   "delimiters with <w> appearing before </w>.",
 ].join(" ");
 
-describe("test NormalizedExampleSentence", () => {
-  test("constructor - correct sentence", () => {
+describe("test normalizing example sentences", () => {
+  test("getNormalizedExampleSentenceWithWordTokens - correct sentence", () => {
     expect(
-      new NormalizedExampleSentence("I have <w>an apple</w>.").sentence,
+      getNormalizedExampleSentenceWithWordTokens("I have <w>an apple</w>."),
     ).toBe("I have <w>an apple</w>.");
   });
 
-  test("constructor - no closing token", () => {
+  test("getNormalizedExampleSentenceWithWordTokens - no closing token", () => {
     expect(() => {
-      new NormalizedExampleSentence("I have <w>an apple.");
+      getNormalizedExampleSentenceWithWordTokens("I have <w>an apple.");
     }).toThrow(Error(errorMsg));
   });
 
-  test("constructor - normalizing whitespace", () => {
+  test("getNormalizedExampleSentenceWithWordTokens - normalizing whitespace", () => {
     expect(
-      new NormalizedExampleSentence(" I have <w> an apple </w>. ").sentence,
+      getNormalizedExampleSentenceWithWordTokens(" I have <w> an apple </w>. "),
     ).toBe("I have <w>an apple</w>.");
   });
 
-  test("constructor - no starting token", () => {
+  test("getNormalizedExampleSentenceWithWordTokens - no starting token", () => {
     expect(() => {
-      new NormalizedExampleSentence("I have an apple</w>.");
+      getNormalizedExampleSentenceWithWordTokens("I have an apple</w>.");
     }).toThrow(Error(errorMsg));
   });
 
-  test("constructor - no tokens", () => {
+  test("getNormalizedExampleSentenceWithWordTokens - no tokens", () => {
     expect(() => {
-      new NormalizedExampleSentence("I have an apple.");
+      getNormalizedExampleSentenceWithWordTokens("I have an apple.");
     }).toThrow(Error(errorMsg));
   });
 
-  test("constructor - closing token before opening", () => {
+  test("getNormalizedExampleSentenceWithWordTokens - closing token before opening", () => {
     expect(() => {
-      new NormalizedExampleSentence("I have </w>an apple<w>.");
+      getNormalizedExampleSentenceWithWordTokens("I have </w>an apple<w>.");
     }).toThrow(Error(errorMsg));
   });
 
-  test("constructor -  incorrect token", () => {
+  test("getNormalizedExampleSentenceWithWordTokens -  incorrect token", () => {
     expect(() => {
-      new NormalizedExampleSentence("I have <e>an apple</e>.");
+      getNormalizedExampleSentenceWithWordTokens("I have <e>an apple</e>.");
     }).toThrow(Error(errorMsg));
   });
 
-  test("getWithoutWordTokens", () => {
-    const sentence = new NormalizedExampleSentence("I have <w>an apple</w>.");
-    expect(sentence.sentence).toBe("I have <w>an apple</w>.");
+  test("getNormalizedExampleSentence", () => {
+    const sentence = getNormalizedExampleSentence("I have <w>an apple</w>.");
+    expect(sentence).toBe("I have an apple.");
   });
 
-  test("getWithInsideOfDelimitersReplacedWithUnderscores", () => {
-    const sentence = new NormalizedExampleSentence("I have <w>an apple</w>.");
-    expect(sentence.getWithInsideOfDelimitersReplacedWithUnderscores()).toBe(
-      "I have __ _____.",
+  test("getNormalizedExampleSentenceWithWordUnderscored", () => {
+    const sentence = getNormalizedExampleSentenceWithWordUnderscored(
+      "I have <w>an apple</w>.",
     );
+    expect(sentence).toBe("I have __ _____.");
   });
 
-  test("getAsHTMLBold", () => {
-    const sentence = new NormalizedExampleSentence("I have <w>an apple</w>.");
-    expect(sentence.getAsHTMLBold()).toBe("I have <b>an apple</b>.");
+  test("getNormalizedExampleSentenceWithBoldWord", () => {
+    const sentence = getNormalizedExampleSentenceWithBoldWord(
+      "I have <w>an apple</w>.",
+    );
+    expect(sentence).toBe("I have <b>an apple</b>.");
   });
 });
