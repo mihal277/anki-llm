@@ -24,6 +24,13 @@ export const getNotesOfGivenDeckFromStorage = (deckId: string): any => {
   return deck?.notes ?? [];
 };
 
+export const getDeckNameFromStorage = (deckId: string): string => {
+  const decks: AnkiDeck[] = getFromStorage(DECKS_STORAGE_KEY, []);
+  const deck = decks.find((deck: AnkiDeck) => deck.id === deckId);
+  if (!deck) throw new Error(`Deck with id ${deckId} not found`);
+  return deck.name;
+};
+
 export const saveNotesInGivenDeckInStorage = (
   deckId: string,
   notes: AnkiNote[],

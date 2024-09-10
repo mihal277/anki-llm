@@ -5,7 +5,9 @@ import { NotesTable } from "@/components/notes-creation/notes-table";
 import { useSearchParams } from "next/navigation";
 import { Suspense, useEffect, useState } from "react";
 import {
+  DECKS_STORAGE_KEY,
   ELEVENLABS_API_KEY_STORAGE_KEY,
+  getDeckNameFromStorage,
   getFromStorage,
   getNotesOfGivenDeckFromStorage,
 } from "@/app/storage";
@@ -13,8 +15,19 @@ import { AnkiNote, getAllDataRequestsOfAnkiNotes } from "@/app/anki/note";
 import { AnkiNoteEditor } from "@/components/notes-creation/anki-note-editor";
 import { Button } from "@/components/ui/button";
 import { Download } from "lucide-react";
+import { makeAnkiImportableCSV } from "../anki/csv";
 
-async function handleDownloadAnkiDeck(notes: AnkiNote[]) {
+function downloadBlob(blob: Blob, filename: string) {
+  const url = window.URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = filename;
+  document.body.appendChild(a);
+  a.click();
+  window.URL.revokeObjectURL(url);
+}
+
+async function handleDownloadAudioFiles(notes: AnkiNote[]) {
   const response = await fetch("/api/generate_audio_elevenlabs", {
     method: "POST",
     body: JSON.stringify({
@@ -22,15 +35,20 @@ async function handleDownloadAnkiDeck(notes: AnkiNote[]) {
       elevenLabsAPIKey: getFromStorage(ELEVENLABS_API_KEY_STORAGE_KEY),
     }),
   });
-  // download payload as a file:
   const blob = await response.blob();
-  const url = window.URL.createObjectURL(blob);
-  const a = document.createElement("a");
-  a.href = url;
-  a.download = "sounds.zip";
-  document.body.appendChild(a);
-  a.click();
-  window.URL.revokeObjectURL(url);
+  downloadBlob(blob, "audio.zip");
+}
+
+function handleDownloadDeckCSV(notes: AnkiNote[], deckId: string) {
+  const deckName = getDeckNameFromStorage(deckId);
+  const csv = makeAnkiImportableCSV(notes, deckName);
+  const blob = new Blob([csv], { type: "text/csv" });
+  downloadBlob(blob, "deck.csv");
+}
+
+async function handleDownloadAnkiDeck(notes: AnkiNote[], deckId: string) {
+  await handleDownloadAudioFiles(notes);
+  handleDownloadDeckCSV(notes, deckId);
 }
 
 function CreateNotesPageContent() {
@@ -82,7 +100,7 @@ function CreateNotesPageContent() {
               />
               <Button
                 variant="outline"
-                onClick={() => handleDownloadAnkiDeck(notesInDeck)}
+                onClick={() => handleDownloadAnkiDeck(notesInDeck, deckId)}
               >
                 <Download />
               </Button>
