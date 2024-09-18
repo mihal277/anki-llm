@@ -11,7 +11,7 @@ export const makeAnkiImportableCSV = (
       "#guid column:1",
       "#notetype column:2",
       "#deck column:3",
-      "#tags column:6",
+      "#tags column:8",
     ].join("\n") + "\n";
   return (
     header + notes.map((note) => ankiNoteToCSVRow(note, deckName)).join("\n")

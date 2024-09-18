@@ -63,7 +63,7 @@ export function getBackForSimpleTranslationAnkiCard(
   language: Language,
 ): AnkiCardSideData {
   const mp3FileName = getUniqueMp3Name();
-  const contentHTML = `${wordOrExpression} ${pronunciation}<br><br>[sound:${mp3FileName}]`;
+  const contentHTML = `${wordOrExpression} [${pronunciation}]<br><br>[sound:${mp3FileName}]`;
   return {
     contentHTML: contentHTML,
     audioData: [

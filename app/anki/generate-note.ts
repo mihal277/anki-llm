@@ -2,7 +2,14 @@ import { Language } from "@/app/language";
 import { AnkiNote } from "@/app/anki/note";
 import { OPEN_AI_STORAGE_KEY, getFromStorage } from "@/app/storage";
 import { getNote as getSpanishNote } from "@/app/anki/spanish";
-import { getNormalizedExampleSentenceWithWordTokens } from "./normalized-example-sentence";
+
+const rtrim = (s: string, characters: string) => {
+  var end = s.length - 1;
+  while (characters.indexOf(s[end]) >= 0) {
+    end -= 1;
+  }
+  return s.substring(0, end + 1);
+};
 
 export const generateAnkiNote = async (
   wordOrExpression: string,
@@ -24,10 +31,11 @@ export const generateAnkiNote = async (
 
   if (!response.ok) throw Error("Failed to generate flashcard data");
 
+  const normalizedEasyDefinition = rtrim(responseJson.easy_definition, " .");
   return getSpanishNote(
     wordOrExpression,
     responseJson.ipa_pronuncation,
-    responseJson.easy_definition,
+    normalizedEasyDefinition,
     responseJson.simple_example_sentence,
   );
 };
