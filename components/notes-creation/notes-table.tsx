@@ -9,20 +9,17 @@ import {
 import { AnkiNote } from "@/app/anki/note";
 import { Button } from "../ui/button";
 import { Trash2 } from "lucide-react";
-import { saveNotesInGivenDeckInStorage } from "@/app/storage";
+import { useLiveQuery } from "dexie-react-hooks";
+import { useSearchParams } from "next/navigation";
+import { db } from "@/app/db/db";
+import { deleteNote } from "@/app/db/queries";
 
-interface NotesTableProps {
-  ankiNotes: AnkiNote[];
-  setNotes: (notes: AnkiNote[]) => void;
-  deckId: string;
-}
-
-export function NotesTable({ ankiNotes, setNotes, deckId }: NotesTableProps) {
-  const handleDeleteNote = (noteId: string) => {
-    const updatedNotes = ankiNotes.filter((note) => note.id !== noteId);
-    setNotes(updatedNotes);
-    saveNotesInGivenDeckInStorage(deckId, updatedNotes);
-  };
+export function NotesTable() {
+  const searchParams = useSearchParams();
+  const deckId = Number(searchParams.get("deckId")!!);
+  const ankiNotes = useLiveQuery(() =>
+    db.ankiNotes.where("ankiDeckId").equals(deckId).toArray(),
+  );
 
   return (
     <Table>
@@ -34,14 +31,14 @@ export function NotesTable({ ankiNotes, setNotes, deckId }: NotesTableProps) {
         </TableRow>
       </TableHeader>
       <TableBody>
-        {ankiNotes.map((ankiNote) => (
+        {ankiNotes?.map((ankiNote: AnkiNote) => (
           <TableRow key={ankiNote.id}>
             <TableCell>{ankiNote.wordOrExpression}</TableCell>
             <TableCell>{ankiNote.definition}</TableCell>
             <TableCell>
               <Button
                 variant="outline"
-                onClick={() => handleDeleteNote(ankiNote.id)}
+                onClick={() => deleteNote(ankiNote.id!!)}
               >
                 <Trash2 />
               </Button>

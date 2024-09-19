@@ -4,18 +4,17 @@ import { NotesCreationInputForm } from "@/components/notes-creation/input-form";
 import { NotesTable } from "@/components/notes-creation/notes-table";
 import { useSearchParams } from "next/navigation";
 import { Suspense, useEffect, useState } from "react";
-import {
-  DECKS_STORAGE_KEY,
-  ELEVENLABS_API_KEY_STORAGE_KEY,
-  getDeckNameFromStorage,
-  getFromStorage,
-  getNotesOfGivenDeckFromStorage,
-} from "@/app/storage";
-import { AnkiNote, getAllDataRequestsOfAnkiNotes } from "@/app/anki/note";
+import { AnkiNoteData, getAllDataRequestsOfAnkiNotes } from "@/app/anki/note";
 import { AnkiNoteEditor } from "@/components/notes-creation/anki-note-editor";
 import { Button } from "@/components/ui/button";
 import { Download } from "lucide-react";
 import { makeAnkiImportableCSV } from "../anki/csv";
+import { ExternalService } from "../db/db";
+import {
+  getAllAnkiNoteDataOfGivenDeck,
+  getDeckName,
+  getExternalServiceAPIKey,
+} from "../db/queries";
 
 function downloadBlob(blob: Blob, filename: string) {
   const url = window.URL.createObjectURL(blob);
@@ -27,65 +26,78 @@ function downloadBlob(blob: Blob, filename: string) {
   window.URL.revokeObjectURL(url);
 }
 
-async function handleDownloadAudioFiles(notes: AnkiNote[]) {
+async function handleDownloadAudioFiles(notes: AnkiNoteData[]) {
+  // todo: handle when eleven labs api key was not provided
+  const elevenLabsApiKey = await getExternalServiceAPIKey(
+    ExternalService.ElevenLabs,
+  )!!;
   const response = await fetch("/api/generate_audio_elevenlabs", {
     method: "POST",
     body: JSON.stringify({
       audioDataRequests: getAllDataRequestsOfAnkiNotes(notes),
-      elevenLabsAPIKey: getFromStorage(ELEVENLABS_API_KEY_STORAGE_KEY),
+      elevenLabsAPIKey: elevenLabsApiKey,
     }),
   });
   const blob = await response.blob();
   downloadBlob(blob, "audio.zip");
 }
 
-function handleDownloadDeckCSV(notes: AnkiNote[], deckId: string) {
-  const deckName = getDeckNameFromStorage(deckId);
-  const csv = makeAnkiImportableCSV(notes, deckName);
+async function handleDownloadDeckCSV(
+  ankiNotesData: AnkiNoteData[],
+  deckId: number,
+) {
+  const deckName = await getDeckName(deckId);
+  const csv = makeAnkiImportableCSV(ankiNotesData, deckName);
   const blob = new Blob([csv], { type: "text/csv" });
   downloadBlob(blob, "deck.csv");
 }
 
-async function handleDownloadAnkiDeck(notes: AnkiNote[], deckId: string) {
-  await handleDownloadAudioFiles(notes);
-  handleDownloadDeckCSV(notes, deckId);
+async function handleDownloadAnkiDeck(deckId: number) {
+  const ankiNotesData: AnkiNoteData[] =
+    await getAllAnkiNoteDataOfGivenDeck(deckId);
+  await handleDownloadAudioFiles(ankiNotesData);
+  await handleDownloadDeckCSV(ankiNotesData, deckId);
+}
+
+export enum NoteGanarationStatus {
+  NotGenerated = "GenerationNotRequestedYet",
+  GenerationRunning = "GenerationRunning",
+  Generated = "Generated",
 }
 
 function CreateNotesPageContent() {
   // preventing hydration errors: https://nextjs.org/docs/messages/react-hydration-error
   const [isClient, setIsClient] = useState(false);
 
+  const [generatedNoteData, setGeneratedNoteData] = useState<
+    AnkiNoteData | undefined
+  >(undefined);
+  const [generationStatus, setGenerationStatus] = useState(
+    NoteGanarationStatus.NotGenerated,
+  );
+
+  const searchParams = useSearchParams();
+  const deckId = Number(searchParams.get("deckId")!!);
+
   useEffect(() => {
     setIsClient(true);
   }, []);
-
-  const searchParams = useSearchParams();
-  const deckId = searchParams.get("deckId")!!;
-  const [notesInDeck, setNotesInDeck] = useState(
-    getNotesOfGivenDeckFromStorage(deckId),
-  );
-  const [isGenerationRunning, setIsGenerationRunning] = useState(false);
-  const [generatedNote, setGeneratedNote] = useState<AnkiNote | undefined>();
-
-  const isGenerated = generatedNote !== undefined;
-  const shouldDisplayInputForm = !(isGenerationRunning || isGenerated);
 
   return (
     <>
       <div className="flex">
         <div className="w-2/3">
-          {shouldDisplayInputForm ? (
+          {generationStatus === NoteGanarationStatus.NotGenerated ? (
             <NotesCreationInputForm
-              setIsGenerationRunning={setIsGenerationRunning}
-              setGeneratedNote={setGeneratedNote}
+              setGenerationStatus={setGenerationStatus}
+              setGeneratedNoteData={setGeneratedNoteData}
             />
           ) : (
-            !isGenerationRunning && (
+            generationStatus === NoteGanarationStatus.Generated && (
               <AnkiNoteEditor
-                ankiNote={generatedNote as AnkiNote}
-                notesInDeck={notesInDeck}
-                setNotesInDeck={setNotesInDeck}
-                setGeneratedNote={setGeneratedNote}
+                generatedNoteData={generatedNoteData!!}
+                setGeneratedNoteData={setGeneratedNoteData}
+                setGenerationStatus={setGenerationStatus}
               />
             )
           )}
@@ -93,14 +105,10 @@ function CreateNotesPageContent() {
         <div className="w-1/3">
           {isClient && (
             <div>
-              <NotesTable
-                ankiNotes={notesInDeck}
-                setNotes={setNotesInDeck}
-                deckId={deckId}
-              />
+              <NotesTable />
               <Button
                 variant="outline"
-                onClick={() => handleDownloadAnkiDeck(notesInDeck, deckId)}
+                onClick={() => handleDownloadAnkiDeck(deckId)}
               >
                 <Download />
               </Button>

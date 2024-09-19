@@ -1,6 +1,5 @@
 import { Language } from "@/app/language";
-import { AnkiNote, AnkiNoteType } from "@/app/anki/note";
-import { v4 as uuid } from "uuid";
+import { AnkiNoteData, AnkiNoteType } from "@/app/anki/note";
 import {
   AnkiCard,
   getBackForClozeSentenceAnkiCard,
@@ -14,7 +13,8 @@ export const getNote = (
   pronunciation: string,
   easyDefinition: string,
   rawExampleSentence: string,
-): AnkiNote => {
+  deckId: number,
+): AnkiNoteData => {
   const card1: AnkiCard = {
     front: getFrontForSimpleTranslationAnkiCard(easyDefinition),
     back: getBackForSimpleTranslationAnkiCard(
@@ -28,10 +28,12 @@ export const getNote = (
     back: getBackForClozeSentenceAnkiCard(rawExampleSentence, Language.Spanish),
   };
   return {
-    id: uuid(),
-    wordOrExpression: wordOrExpression,
-    definition: easyDefinition,
-    type: AnkiNoteType.TwoBasicAndReversed,
+    note: {
+      wordOrExpression: wordOrExpression,
+      definition: easyDefinition,
+      type: AnkiNoteType.TwoBasicAndReversed,
+      ankiDeckId: deckId,
+    },
     cards: [card1, card2],
   };
 };

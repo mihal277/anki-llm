@@ -1,7 +1,7 @@
-import { AnkiNote, ankiNoteToCSVRow } from "./note";
+import { AnkiNoteData, ankiNoteToCSVRow as ankiNoteDataToCSVRow } from "./note";
 
 export const makeAnkiImportableCSV = (
-  notes: AnkiNote[],
+  ankiNotesData: AnkiNoteData[],
   deckName: string,
 ): string => {
   const header =
@@ -14,6 +14,9 @@ export const makeAnkiImportableCSV = (
       "#tags column:8",
     ].join("\n") + "\n";
   return (
-    header + notes.map((note) => ankiNoteToCSVRow(note, deckName)).join("\n")
+    header +
+    ankiNotesData
+      .map((noteData) => ankiNoteDataToCSVRow(noteData, deckName))
+      .join("\n")
   );
 };

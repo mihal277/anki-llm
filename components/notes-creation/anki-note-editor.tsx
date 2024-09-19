@@ -1,55 +1,35 @@
-import { AnkiNote } from "@/app/anki/note";
+import { AnkiNoteData } from "@/app/anki/note";
 import { EditableAnkiNote } from "./editable-anki-note";
 import { Button } from "../ui/button";
-import { saveNotesInGivenDeckInStorage } from "@/app/storage";
-import { useSearchParams } from "next/navigation";
+import { NoteGanarationStatus } from "@/app/create-notes/page";
+import { saveNewNote } from "@/app/db/queries";
 
 const saveNote = (
-  deckId: string,
-  ankiNote: AnkiNote,
-  notesInDeck: AnkiNote[],
-  setNotesInDeck: (notes: AnkiNote[]) => void,
-  setGeneratedNote: (note: AnkiNote | undefined) => void,
+  generatedNoteData: AnkiNoteData,
+  setGenerationStatus: (generationStatus: NoteGanarationStatus) => void,
 ) => {
-  const updatedNotesInDeck = [...notesInDeck, ankiNote];
-  setNotesInDeck(updatedNotesInDeck);
-  saveNotesInGivenDeckInStorage(deckId, updatedNotesInDeck);
-  setGeneratedNote(undefined);
+  saveNewNote(generatedNoteData);
+  setGenerationStatus(NoteGanarationStatus.NotGenerated);
 };
 
 interface AnkiNoteEditorProps {
-  ankiNote: AnkiNote;
-  notesInDeck: AnkiNote[];
-  setNotesInDeck: (notes: AnkiNote[]) => void;
-  setGeneratedNote: (note: AnkiNote | undefined) => void;
+  generatedNoteData: AnkiNoteData;
+  setGeneratedNoteData: (generatedNoteData: AnkiNoteData) => void;
+  setGenerationStatus: (generationStatus: NoteGanarationStatus) => void;
 }
 
 export function AnkiNoteEditor({
-  ankiNote,
-  notesInDeck: otherNotes,
-  setNotesInDeck: setOtherNotes,
-  setGeneratedNote,
+  generatedNoteData,
+  setGeneratedNoteData,
+  setGenerationStatus,
 }: AnkiNoteEditorProps) {
-  const searchParams = useSearchParams();
-  const deckId = searchParams.get("deckId")!!;
-
   return (
     <div>
       <EditableAnkiNote
-        ankiNote={ankiNote}
-        setGeneratedNote={setGeneratedNote}
+        ankiNoteData={generatedNoteData}
+        setGeneratedNoteData={setGeneratedNoteData}
       />
-      <Button
-        onClick={() =>
-          saveNote(
-            deckId,
-            ankiNote,
-            otherNotes,
-            setOtherNotes,
-            setGeneratedNote,
-          )
-        }
-      >
+      <Button onClick={() => saveNote(generatedNoteData, setGenerationStatus)}>
         Save Note
       </Button>
     </div>

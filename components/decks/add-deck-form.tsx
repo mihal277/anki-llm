@@ -22,10 +22,9 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { toast } from "@/components/ui/use-toast";
-import { AnkiDeck } from "@/app/anki/deck";
 import { Language } from "@/app/language";
 import { Input } from "@/components/ui/input";
-import { DECKS_STORAGE_KEY, addToStorage } from "@/app/storage";
+import { db } from "@/app/db/db";
 
 const FormSchema = z.object({
   deckName: z.string({
@@ -37,32 +36,21 @@ const FormSchema = z.object({
 });
 
 interface AnkiDeckFormProps {
-  ankiDecks: AnkiDeck[];
-  setAnkiDecks: (ankiDecks: AnkiDeck[]) => void;
-  setOpen: (open: boolean) => void;
+  setIsPopoverOpen: (open: boolean) => void;
 }
 
-export function AddDeckForm({
-  ankiDecks,
-  setAnkiDecks,
-  setOpen,
-}: AnkiDeckFormProps) {
+export function AddDeckForm({ setIsPopoverOpen }: AnkiDeckFormProps) {
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
   });
 
-  function onSubmit(data: z.infer<typeof FormSchema>) {
-    const newDeck: AnkiDeck = {
-      id: uuid(),
+  async function onSubmit(data: z.infer<typeof FormSchema>) {
+    await db.ankiDecks.add({
       name: data.deckName,
       language: data.language,
-      notes: [],
-    };
-    const updatedDecks = [...ankiDecks, newDeck];
-    setAnkiDecks(updatedDecks);
-    addToStorage(DECKS_STORAGE_KEY, updatedDecks);
+    });
 
-    setOpen(false);
+    setIsPopoverOpen(false);
 
     toast({
       title: "Deck created!",

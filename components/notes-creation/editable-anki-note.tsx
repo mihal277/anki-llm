@@ -1,90 +1,87 @@
 import { AnkiCard } from "@/app/anki/card";
-import { AnkiNote } from "@/app/anki/note";
+import { AnkiNoteData } from "@/app/anki/note";
 import { Input } from "@/components/ui/input";
 
 interface CardInputProps {
-  ankiNote: AnkiNote;
-  ankiCard: AnkiCard;
+  ankiNoteData: AnkiNoteData;
   ankiCardIndex: number;
-  setGeneratedNote: (note: AnkiNote) => void;
+  setGeneratedNoteData: (noteData: AnkiNoteData) => void;
 }
 
 function CardFrontInput({
-  ankiNote,
-  ankiCard,
+  ankiNoteData,
   ankiCardIndex,
-  setGeneratedNote,
+  setGeneratedNoteData,
 }: CardInputProps) {
+  const ankiCard = ankiNoteData.cards[ankiCardIndex];
   return (
     <Input
       value={ankiCard.front.contentHTML}
       onChange={(e) => {
-        const newCard = {
+        const updatedAnkiCard = {
           ...ankiCard,
           front: { ...ankiCard.front, contentHTML: e.target.value },
         } as AnkiCard;
-        const newNote = {
-          ...ankiNote,
-          cards: ankiNote.cards.map((c, j) =>
-            j === ankiCardIndex ? newCard : c,
-          ),
-        } as AnkiNote;
-        setGeneratedNote(newNote);
+        const updatedAnkiCards = ankiNoteData.cards.map((card, i) =>
+          i === ankiCardIndex ? updatedAnkiCard : card,
+        );
+        setGeneratedNoteData({
+          ...ankiNoteData,
+          cards: updatedAnkiCards,
+        });
       }}
     />
   );
 }
 
 function CardBackInput({
-  ankiNote,
-  ankiCard,
+  ankiNoteData,
   ankiCardIndex,
-  setGeneratedNote,
+  setGeneratedNoteData,
 }: CardInputProps) {
+  const ankiCard = ankiNoteData.cards[ankiCardIndex];
   return (
     <Input
       value={ankiCard.back.contentHTML}
       onChange={(e) => {
-        const newCard = {
+        const updatedAnkiCard = {
           ...ankiCard,
           back: { ...ankiCard.back, contentHTML: e.target.value },
         } as AnkiCard;
-        const newNote = {
-          ...ankiNote,
-          cards: ankiNote.cards.map((c, j) =>
-            j === ankiCardIndex ? newCard : c,
-          ),
-        } as AnkiNote;
-        setGeneratedNote(newNote);
+        const updatedAnkiCards = ankiNoteData.cards.map((card, i) =>
+          i === ankiCardIndex ? updatedAnkiCard : card,
+        );
+        setGeneratedNoteData({
+          ...ankiNoteData,
+          cards: updatedAnkiCards,
+        });
       }}
     />
   );
 }
 
 interface EditableAnkiNoteProps {
-  ankiNote: AnkiNote;
-  setGeneratedNote: (note: AnkiNote) => void;
+  ankiNoteData: AnkiNoteData;
+  setGeneratedNoteData: (generatedNoteData: AnkiNoteData) => void;
 }
 
 export function EditableAnkiNote({
-  ankiNote,
-  setGeneratedNote,
+  ankiNoteData,
+  setGeneratedNoteData,
 }: EditableAnkiNoteProps) {
   return (
     <div>
-      {ankiNote.cards.map((card, i) => (
+      {ankiNoteData.cards.map((_, i) => (
         <div key={i}>
           <CardFrontInput
-            ankiNote={ankiNote}
-            ankiCard={card}
+            ankiNoteData={ankiNoteData}
             ankiCardIndex={i}
-            setGeneratedNote={setGeneratedNote}
+            setGeneratedNoteData={setGeneratedNoteData}
           />
           <CardBackInput
-            ankiNote={ankiNote}
-            ankiCard={card}
+            ankiNoteData={ankiNoteData}
             ankiCardIndex={i}
-            setGeneratedNote={setGeneratedNote}
+            setGeneratedNoteData={setGeneratedNoteData}
           />
         </div>
       ))}
