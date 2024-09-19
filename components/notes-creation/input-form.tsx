@@ -15,6 +15,8 @@ import {
 import { Input } from "@/components/ui/input";
 import { generateAnkiNote } from "@/app/anki/generate-note";
 import { Language } from "@/app/language";
+import { NoteGanarationStatus } from "@/app/create-notes/page";
+import { useSearchParams } from "next/navigation";
 import { AnkiNote } from "@/app/anki/note";
 
 const FormSchema = z.object({
@@ -27,14 +29,17 @@ const FormSchema = z.object({
 });
 
 interface NotesCreationInputFormProps {
-  setIsGenerationRunning: (isRunning: boolean) => void;
-  setGeneratedNote: (ankiNote: AnkiNote) => void;
+  setGenerationStatus: (generationStatus: NoteGanarationStatus) => void;
+  setGeneratedNote: (generatedNote: AnkiNote) => void;
 }
 
 export function NotesCreationInputForm({
-  setIsGenerationRunning,
+  setGenerationStatus,
   setGeneratedNote,
 }: NotesCreationInputFormProps) {
+  const searchParams = useSearchParams();
+  const deckId = Number(searchParams.get("deckId")!!);
+
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
     defaultValues: {
@@ -44,14 +49,15 @@ export function NotesCreationInputForm({
   });
 
   async function onSubmit(data: z.infer<typeof FormSchema>) {
-    setIsGenerationRunning(true);
+    setGenerationStatus(NoteGanarationStatus.GenerationRunning);
     const ankiNote = await generateAnkiNote(
       data.wordOrExpression,
       data.definition,
       Language.Spanish,
+      deckId,
     );
-    setIsGenerationRunning(false);
     setGeneratedNote(ankiNote);
+    setGenerationStatus(NoteGanarationStatus.Generated);
   }
 
   return (

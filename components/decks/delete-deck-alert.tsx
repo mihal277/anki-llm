@@ -13,15 +13,15 @@ import { Button } from "@/components/ui/button";
 import { Trash2 } from "lucide-react";
 
 interface DeleteDeckProps {
-  deleteDeck: () => void;
+  onDeleteDeck: () => void;
 }
 
-export function DeleteDeckButton({ deleteDeck }: DeleteDeckProps) {
+export function DeleteDeckButton({ onDeleteDeck }: DeleteDeckProps) {
   return (
     <Button
       variant="outline"
       onClick={() => {
-        deleteDeck();
+        onDeleteDeck();
       }}
     >
       <Trash2 />
@@ -29,7 +29,7 @@ export function DeleteDeckButton({ deleteDeck }: DeleteDeckProps) {
   );
 }
 
-export function DeleteDeckAlert({ deleteDeck }: DeleteDeckProps) {
+export function DeleteDeckAlert({ onDeleteDeck }: DeleteDeckProps) {
   return (
     <AlertDialog>
       <AlertDialogTrigger asChild>
@@ -47,7 +47,7 @@ export function DeleteDeckAlert({ deleteDeck }: DeleteDeckProps) {
         </AlertDialogHeader>
         <AlertDialogFooter>
           <AlertDialogCancel>Cancel</AlertDialogCancel>
-          <AlertDialogAction onClick={deleteDeck}>Delete</AlertDialogAction>
+          <AlertDialogAction onClick={onDeleteDeck}>Delete</AlertDialogAction>
         </AlertDialogFooter>
       </AlertDialogContent>
     </AlertDialog>

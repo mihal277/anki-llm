@@ -16,12 +16,12 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { ExternalService } from "@/app/db/db";
 import {
-  ELEVENLABS_API_KEY_STORAGE_KEY,
-  OPEN_AI_STORAGE_KEY,
-  addToStorage,
-  getFromStorage,
-} from "@/app/storage";
+  getExternalServiceAPIKey,
+  putExternalServiceAPIKey,
+} from "@/app/db/queries";
+import { useEffect } from "react";
 
 const formSchema = z.object({
   openAIKey: z.string().min(50, {
@@ -29,8 +29,8 @@ const formSchema = z.object({
   }),
   elevenLabsAPIKey: z
     .string()
-    .length(32, {
-      message: "Elevenlabs API key has 32 characters.",
+    .min(50, {
+      message: "Elevenlabs API key too short",
     })
     .optional()
     .or(z.literal("")),
@@ -40,14 +40,34 @@ export function SettingsForm() {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      openAIKey: getFromStorage(OPEN_AI_STORAGE_KEY) ?? "",
-      elevenLabsAPIKey: getFromStorage(ELEVENLABS_API_KEY_STORAGE_KEY) ?? "",
+      openAIKey: "",
+      elevenLabsAPIKey: "",
     },
   });
 
+  useEffect(() => {
+    async function fetchAPIKeys() {
+      const openAIKey =
+        (await getExternalServiceAPIKey(ExternalService.OpenAI)) ?? "";
+      const elevenLabsAPIKey =
+        (await getExternalServiceAPIKey(ExternalService.ElevenLabs)) ?? "";
+
+      form.reset({
+        openAIKey: openAIKey,
+        elevenLabsAPIKey: elevenLabsAPIKey,
+      });
+    }
+
+    fetchAPIKeys();
+  }, []); // eslint-disable-line
+
   function onSubmit(values: z.infer<typeof formSchema>) {
-    addToStorage(OPEN_AI_STORAGE_KEY, values.openAIKey);
-    addToStorage(ELEVENLABS_API_KEY_STORAGE_KEY, values.elevenLabsAPIKey);
+    putExternalServiceAPIKey(ExternalService.OpenAI, values.openAIKey);
+    if (values.elevenLabsAPIKey !== undefined)
+      putExternalServiceAPIKey(
+        ExternalService.ElevenLabs,
+        values.elevenLabsAPIKey,
+      );
   }
 
   return (

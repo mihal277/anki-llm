@@ -10,7 +10,8 @@ export enum AnkiNoteType {
 }
 
 export interface AnkiNote {
-  id: string;
+  id?: number;
+  ankiDeckId: number;
   wordOrExpression: string;
   definition: string;
   type: AnkiNoteType;

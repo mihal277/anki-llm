@@ -1,9 +1,7 @@
 import { Language } from "../language";
-import { AnkiNote } from "./note";
 
 export interface AnkiDeck {
-  id: string;
+  id?: number;
   name: string;
   language: Language;
-  notes: AnkiNote[];
 }

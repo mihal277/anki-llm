@@ -1,15 +1,20 @@
+import { AudioDataRequest } from "../audio";
 import { Language } from "../language";
 import {
   getNormalizedExampleSentence,
   getNormalizedExampleSentenceWithBoldWord,
   getNormalizedExampleSentenceWithWordUnderscored,
 } from "./normalized-example-sentence";
-import { AnkiCardSideData } from "./types";
 import { v4 as uuid } from "uuid";
 
 const getUniqueMp3Name = () => {
   return `${uuid()}.mp3`;
 };
+
+interface AnkiCardSideData {
+  contentHTML: string;
+  audioData: AudioDataRequest[];
+}
 
 export interface AnkiCard {
   front: AnkiCardSideData;
