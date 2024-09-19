@@ -5,18 +5,9 @@ import {
 } from "@/components/ui/popover";
 import { Button } from "../ui/button";
 import { AddDeckForm } from "./add-deck-form";
-import { AnkiDeck } from "@/app/anki/deck";
 import { useState } from "react";
 
-interface AddDeckPopoverProps {
-  ankiDecks: AnkiDeck[];
-  setAnkiDecks: (ankiDecks: AnkiDeck[]) => void;
-}
-
-export function AddDeckPopover({
-  ankiDecks,
-  setAnkiDecks,
-}: AddDeckPopoverProps) {
+export function AddDeckPopover() {
   const [open, setOpen] = useState(false);
 
   return (
@@ -27,11 +18,7 @@ export function AddDeckPopover({
         </Button>
       </PopoverTrigger>
       <PopoverContent>
-        <AddDeckForm
-          ankiDecks={ankiDecks}
-          setAnkiDecks={setAnkiDecks}
-          setOpen={setOpen}
-        />
+        <AddDeckForm setIsPopoverOpen={setOpen} />
       </PopoverContent>
     </Popover>
   );

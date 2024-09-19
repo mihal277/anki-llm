@@ -24,7 +24,7 @@ export default function SettingsSheet() {
           <SheetDescription>
             To generate the Anki flashcards, you need to provide the OpenAI API
             key. If the flashcards are supposed to have audio, you also need to
-            provide Play.ht credentials.
+            provide ElevenLabs credentials.
           </SheetDescription>
         </SheetHeader>
         <SettingsForm />

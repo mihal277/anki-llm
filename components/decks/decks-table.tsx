@@ -7,29 +7,17 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { FilePlus2, Trash2 } from "lucide-react";
+import { FilePlus2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { DECKS_STORAGE_KEY, addToStorage } from "@/app/storage";
 import { toast } from "@/components/ui/use-toast";
-import { Language } from "@/app/language";
 import { DeleteDeckAlert } from "./delete-deck-alert";
 import Link from "next/link";
+import { useLiveQuery } from "dexie-react-hooks";
+import { db } from "@/app/db/db";
+import { deleteDeck } from "@/app/db/queries";
 
-interface DecksTableProps {
-  ankiDecks: AnkiDeck[];
-  setAnkiDecks: (ankiDecks: AnkiDeck[]) => void;
-}
-
-const deleteDeck = (
-  deckId: string,
-  deckName: string,
-  language: Language,
-  ankiDecks: AnkiDeck[],
-  setAnkiDecks: (ankiDecks: AnkiDeck[]) => void,
-) => {
-  const updatedDecks = ankiDecks.filter((deck) => deck.id !== deckId);
-  setAnkiDecks(updatedDecks);
-  addToStorage(DECKS_STORAGE_KEY, updatedDecks);
+const onDeleteDeck = async (ankiDeck: AnkiDeck) => {
+  await deleteDeck(ankiDeck.id!!);
 
   toast({
     title: "Deck deleted!",
@@ -37,18 +25,20 @@ const deleteDeck = (
       <div className="flex flex-col mt-2 w-[340px] rounded-md bg-slate-950 p-4">
         <div>
           <span className="text-white">Name: </span>
-          <span className="text-white font-bold">{deckName}</span>
+          <span className="text-white font-bold">{ankiDeck.name}</span>
         </div>
         <div>
           <span className="text-white">Language: </span>
-          <span className="text-white font-bold">{language}</span>
+          <span className="text-white font-bold">{ankiDeck.language}</span>
         </div>
       </div>
     ),
   });
 };
 
-export function DecksTable({ ankiDecks, setAnkiDecks }: DecksTableProps) {
+export function DecksTable() {
+  const decks = useLiveQuery(() => db.ankiDecks.toArray());
+
   return (
     <Table>
       <TableHeader>
@@ -60,7 +50,7 @@ export function DecksTable({ ankiDecks, setAnkiDecks }: DecksTableProps) {
         </TableRow>
       </TableHeader>
       <TableBody>
-        {ankiDecks.map((ankiDeck) => (
+        {decks?.map((ankiDeck: AnkiDeck) => (
           <TableRow key={ankiDeck.id}>
             <TableCell className="font-medium">{ankiDeck.name}</TableCell>
             <TableCell>{ankiDeck.language.valueOf()}</TableCell>
@@ -81,14 +71,8 @@ export function DecksTable({ ankiDecks, setAnkiDecks }: DecksTableProps) {
             <TableCell>
               <div className="flex justify-center">
                 <DeleteDeckAlert
-                  deleteDeck={() => {
-                    deleteDeck(
-                      ankiDeck.id,
-                      ankiDeck.name,
-                      ankiDeck.language,
-                      ankiDecks,
-                      setAnkiDecks,
-                    );
+                  onDeleteDeck={() => {
+                    onDeleteDeck(ankiDeck);
                   }}
                 />
               </div>

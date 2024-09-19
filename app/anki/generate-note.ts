@@ -1,7 +1,8 @@
 import { Language } from "@/app/language";
 import { AnkiNote } from "@/app/anki/note";
-import { OPEN_AI_STORAGE_KEY, getFromStorage } from "@/app/storage";
 import { getNote as getSpanishNote } from "@/app/anki/spanish";
+import { getExternalServiceAPIKey } from "../db/queries";
+import { ExternalService } from "../db/db";
 
 const rtrim = (s: string, characters: string) => {
   var end = s.length - 1;
@@ -15,6 +16,7 @@ export const generateAnkiNote = async (
   wordOrExpression: string,
   meaning: string,
   language: Language,
+  deckId: number,
 ): Promise<AnkiNote> => {
   if (language !== Language.Spanish) throw Error("Language not supported");
 
@@ -24,7 +26,7 @@ export const generateAnkiNote = async (
       word_or_expression: wordOrExpression,
       meaning: meaning,
       language_str: language.valueOf(),
-      api_key: getFromStorage(OPEN_AI_STORAGE_KEY),
+      api_key: await getExternalServiceAPIKey(ExternalService.OpenAI),
     }),
   });
   const responseJson = await response.json();
@@ -37,5 +39,6 @@ export const generateAnkiNote = async (
     responseJson.ipa_pronuncation,
     normalizedEasyDefinition,
     responseJson.simple_example_sentence,
+    deckId,
   );
 };
