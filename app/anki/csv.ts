@@ -11,7 +11,7 @@ export const makeAnkiImportableCSV = (
       "#guid column:1",
       "#notetype column:2",
       "#deck column:3",
-      "#tags column:8",
+      "#tags column:4",
     ].join("\n") + "\n";
   return (
     header +
