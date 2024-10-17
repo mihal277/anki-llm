@@ -39,6 +39,7 @@ export const generateAnkiNote = async (
     responseJson.ipa_pronuncation,
     normalizedEasyDefinition,
     responseJson.simple_example_sentence,
+    meaning,
     deckId,
   );
 };

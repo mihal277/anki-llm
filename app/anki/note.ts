@@ -4,9 +4,10 @@ import { v4 as uuid } from "uuid";
 
 export enum AnkiNoteType {
   Basic = "Basic",
-  BasicAndReversed = "Basic (and reversed card)",
-  TwoConnectedCards = "2 connected cards",
-  TwoBasicAndReversed = "2x basic and reversed",
+  TwoBasic = "Two Basic Cards",
+  ThreeBasic = "Three Basic Cards",
+  FourBasic = "Four Basic Cards",
+  FiveBasic = "Five Basic Cards",
 }
 
 export interface AnkiNote {
@@ -14,19 +15,35 @@ export interface AnkiNote {
   ankiDeckId: number;
   wordOrExpression: string;
   definition: string;
-  type: AnkiNoteType;
   cards: AnkiCard[];
 }
 
+const getSelectedForExportCards = (ankiNote: AnkiNote): AnkiCard[] => {
+  return ankiNote.cards.filter((card) => card.selected_for_export);
+};
+
+const getAnkiNoteType = (ankiNote: AnkiNote): AnkiNoteType => {
+  const noteTypes = Object.values(AnkiNoteType);
+  const selectedForExportCardsLen = getSelectedForExportCards(ankiNote).length;
+
+  if (selectedForExportCardsLen > noteTypes.length)
+    throw new Error(
+      "Invalid number of cards. A maximum of 5 cards can be exportable",
+    );
+
+  return noteTypes[selectedForExportCardsLen - 1] as AnkiNoteType;
+};
+
 export function ankiNoteToCSVRow(ankiNote: AnkiNote, deckName: string): string {
   const guid = uuid();
-  const noteType = ankiNote.type.valueOf();
+  const noteType = getAnkiNoteType(ankiNote).valueOf();
   const tags = "";
 
-  const cardColumns = ankiNote.cards.map(
+  const cardsSelectedForExport = getSelectedForExportCards(ankiNote);
+  const cardColumns = cardsSelectedForExport.map(
     (card) => `${card.front.contentHTML}\t${card.back.contentHTML}`,
   );
-  return [guid, noteType, deckName, ...cardColumns, tags].join("\t");
+  return [guid, noteType, deckName, tags, ...cardColumns].join("\t");
 }
 
 function getAllAudioDataRequestsOfAnkiNote(
