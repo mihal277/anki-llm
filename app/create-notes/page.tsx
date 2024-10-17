@@ -4,8 +4,12 @@ import { NotesCreationInputForm } from "@/components/notes-creation/input-form";
 import { NotesTable } from "@/components/notes-creation/notes-table";
 import { useSearchParams } from "next/navigation";
 import { Suspense, useEffect, useState } from "react";
-import { AnkiNote, getAllDataRequestsOfAnkiNotes } from "@/app/anki/note";
-import { AnkiNoteEditor } from "@/components/notes-creation/anki-note-editor";
+import {
+  AnkiNote,
+  getAllAudioDataRequestsOfAnkiNotes,
+  postprocessNotesForExport,
+} from "@/app/anki/note";
+import { AnkiCardsPicker } from "@/components/notes-creation/anki-cards-picker";
 import { Button } from "@/components/ui/button";
 import { Download } from "lucide-react";
 import { makeAnkiImportableCSV } from "../anki/csv";
@@ -26,7 +30,9 @@ function downloadBlob(blob: Blob, filename: string) {
   window.URL.revokeObjectURL(url);
 }
 
-async function handleDownloadAudioFiles(notes: AnkiNote[]) {
+async function handleDownloadAudioFiles(
+  contentToMp3Name: Record<string, string>,
+) {
   // todo: handle when eleven labs api key was not provided
   const elevenLabsApiKey = await getExternalServiceAPIKey(
     ExternalService.ElevenLabs,
@@ -34,7 +40,16 @@ async function handleDownloadAudioFiles(notes: AnkiNote[]) {
   const response = await fetch("/api/generate_audio_elevenlabs", {
     method: "POST",
     body: JSON.stringify({
-      audioDataRequests: getAllDataRequestsOfAnkiNotes(notes),
+      audioDataRequests: Object.entries(contentToMp3Name).map(
+        ([content, mp3Name]) => {
+          return {
+            content,
+            mp3Name,
+            // todo
+            language: "Spanish",
+          };
+        },
+      ),
       elevenLabsAPIKey: elevenLabsApiKey,
     }),
   });
@@ -51,8 +66,10 @@ async function handleDownloadDeckCSV(ankiNotes: AnkiNote[], deckId: number) {
 
 async function handleDownloadAnkiDeck(deckId: number) {
   const ankiNotes: AnkiNote[] = await getAllAnkiNotesOfGivenDeck(deckId);
-  await handleDownloadAudioFiles(ankiNotes);
-  await handleDownloadDeckCSV(ankiNotes, deckId);
+  const { posprecessedAnkiNotes, contentToMp3Name } =
+    postprocessNotesForExport(ankiNotes);
+  await handleDownloadAudioFiles(contentToMp3Name);
+  await handleDownloadDeckCSV(posprecessedAnkiNotes, deckId);
 }
 
 export enum NoteGanarationStatus {
@@ -90,7 +107,7 @@ function CreateNotesPageContent() {
             />
           ) : (
             generationStatus === NoteGanarationStatus.Generated && (
-              <AnkiNoteEditor
+              <AnkiCardsPicker
                 generatedNote={generatedNote!!}
                 setGeneratedNote={setGeneratedNote}
                 setGenerationStatus={setGenerationStatus}

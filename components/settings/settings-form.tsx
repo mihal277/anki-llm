@@ -102,7 +102,9 @@ export function SettingsForm() {
           )}
         />
         <div className="flex flex-col max-w-max gap-1">
-          <Button type="submit">Save</Button>
+          <Button variant="outline" type="submit">
+            Save
+          </Button>
           {form.formState.isSubmitSuccessful && (
             <div className="flex flex-row gap-1">
               <span>Saved</span>

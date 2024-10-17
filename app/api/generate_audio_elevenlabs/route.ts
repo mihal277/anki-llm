@@ -68,7 +68,11 @@ const streamAudioFromElevenLabs = async (
 
 const zipMP3Files = async (
   audioBuffers: Buffer[],
-  audioDataRequests: AudioDataRequest[],
+  audioDataRequests: {
+    content: string;
+    mp3Name: string;
+    language: string;
+  }[],
 ) => {
   const zip = new JSZip();
   audioBuffers.forEach((audioBuffer, index) => {
@@ -80,7 +84,11 @@ const zipMP3Files = async (
 export async function POST(request: NextRequest) {
   const bodyJson = await request.json();
 
-  const audioDataRequests: AudioDataRequest[] = bodyJson.audioDataRequests;
+  const audioDataRequests: {
+    content: string;
+    mp3Name: string;
+    language: string;
+  }[] = bodyJson.audioDataRequests;
 
   const client = new ElevenLabsClient({
     apiKey: bodyJson.elevenLabsAPIKey,

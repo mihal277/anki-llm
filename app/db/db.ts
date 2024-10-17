@@ -25,5 +25,5 @@ export const db = new Dexie("AnkiLLM_Database") as Dexie & {
 db.version(1).stores({
   externalServiceAPIKeys: "&externalServiceName",
   ankiDecks: "++id,&name,language",
-  ankiNotes: "++id,ankiDeckId,type",
+  ankiNotes: "++id,ankiDeckId",
 });
