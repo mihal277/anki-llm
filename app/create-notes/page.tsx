@@ -5,7 +5,7 @@ import { NotesTable } from "@/components/notes-creation/notes-table";
 import { useSearchParams } from "next/navigation";
 import { Suspense, useEffect, useState } from "react";
 import { AnkiNote, getAllDataRequestsOfAnkiNotes } from "@/app/anki/note";
-import { AnkiNoteEditor } from "@/components/notes-creation/anki-note-editor";
+import { AnkiCardsPicker } from "@/components/notes-creation/anki-cards-picker";
 import { Button } from "@/components/ui/button";
 import { Download } from "lucide-react";
 import { makeAnkiImportableCSV } from "../anki/csv";
@@ -90,7 +90,7 @@ function CreateNotesPageContent() {
             />
           ) : (
             generationStatus === NoteGanarationStatus.Generated && (
-              <AnkiNoteEditor
+              <AnkiCardsPicker
                 generatedNote={generatedNote!!}
                 setGeneratedNote={setGeneratedNote}
                 setGenerationStatus={setGenerationStatus}

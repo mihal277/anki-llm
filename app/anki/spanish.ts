@@ -22,10 +22,12 @@ export const getNote = (
       pronunciation,
       Language.Spanish,
     ),
+    selected_for_export: false,
   };
   const card2: AnkiCard = {
     front: getFrontForClozeSentenceAnkiCard(rawExampleSentence, easyDefinition),
     back: getBackForClozeSentenceAnkiCard(rawExampleSentence, Language.Spanish),
+    selected_for_export: false,
   };
   return {
     wordOrExpression: wordOrExpression,
