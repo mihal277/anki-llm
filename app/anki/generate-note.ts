@@ -3,7 +3,6 @@ import { AnkiNote } from "@/app/anki/note";
 import { getNote as getSpanishNote } from "@/app/anki/spanish";
 import { getExternalServiceAPIKey } from "../db/queries";
 import { ExternalService } from "../db/db";
-import { pronunciationDictionary } from "elevenlabs/api";
 
 const rtrim = (s: string, characters: string) => {
   var end = s.length - 1;
@@ -11,6 +10,13 @@ const rtrim = (s: string, characters: string) => {
     end -= 1;
   }
   return s.substring(0, end + 1);
+};
+
+const postprocessPronunciation = (pronunciation: string): string => {
+  if (!pronunciation.startsWith("[")) pronunciation = "[" + pronunciation;
+  if (!pronunciation.endsWith("]")) pronunciation += "]";
+
+  return pronunciation.replace(/ /g, "\u00A0");
 };
 
 export const generateAnkiNote = async (
@@ -35,11 +41,9 @@ export const generateAnkiNote = async (
   if (!response.ok) throw Error("Failed to generate flashcard data");
 
   const normalizedEasyDefinition = rtrim(responseJson.easy_definition, " .");
-  const pronunciationWithNonBreakingSpaces =
-    responseJson.ipa_pronuncation.replace(/ /g, "\u00A0");
   return getSpanishNote(
     wordOrExpression,
-    pronunciationWithNonBreakingSpaces,
+    postprocessPronunciation(responseJson.ipa_pronuncation),
     normalizedEasyDefinition,
     responseJson.simple_example_sentence,
     meaning,
