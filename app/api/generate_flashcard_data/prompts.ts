@@ -10,14 +10,16 @@ The definition is only in ${$.language}, \
 without defining it in other languages. \
 Don't use the word/expression in the definition \
 (also, don't use near-synonyms with common root etc.). \
-The definition should only contain common words.`;
+The definition should only contain very common words, \
+ones a beginner student would know`;
 
 export const simpleExampleSentenceDescription = ($: {
   language: Language;
 }) => `a simple medium-long example sentence 
   in ${$.language} using the word/expression. Ideally, use the basic form of the word. 
   The word that the sentence is about should be between <w> and </w>.
-  The sentence contains only common words.`;
+  The sentence contains only very common words, \
+  ones a beginner student would know.`;
 
 const pronunciationExamplesSpanish = `
   tener: [teˈner],

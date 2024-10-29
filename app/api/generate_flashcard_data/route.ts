@@ -72,6 +72,9 @@ export async function POST(request: NextRequest) {
     messages: messages as ChatCompletionUserMessageParam[],
     tools: tools as ChatCompletionTool[],
     tool_choice: "auto",
+    // setting high temperature to get varied example sentences on clicking
+    // regenerate
+    temperature: 1,
   });
   const responseMessage = response.choices[0].message;
 
