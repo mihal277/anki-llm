@@ -1,10 +1,16 @@
 import React from "react";
 import { Button } from "../ui/button";
-import { NoteGanarationStatus } from "@/app/create-notes/page";
+import {
+  InputForNoteGeneration,
+  NoteGanarationStatus,
+} from "@/app/create-notes/page";
+import { generateAnkiNote } from "@/app/anki/generate-note";
 import { saveNewNote } from "@/app/db/queries";
 import { AnkiNote } from "@/app/anki/note";
 import { Card, CardContent } from "../ui/card";
 import DOMPurify from "dompurify";
+import { Language } from "@/app/language";
+import { useSearchParams } from "next/navigation";
 
 const stripMp3TagFromAnkiCardContent = (content: string): string => {
   return content.replace(/\[sound:[^\]]+\.mp3\]/g, "").trim();
@@ -18,16 +24,35 @@ const saveNote = (
   setGenerationStatus(NoteGanarationStatus.NotGenerated);
 };
 
+const regenerateNote = async (
+  setGenerationStatus: (generationStatus: NoteGanarationStatus) => void,
+  setGeneratedNote: (generatedNote: AnkiNote) => void,
+  inputForNoteGeneration: InputForNoteGeneration,
+  deckId: number,
+) => {
+  setGenerationStatus(NoteGanarationStatus.GenerationRunning);
+  const ankiNote = await generateAnkiNote(
+    inputForNoteGeneration.wordOrExpression!!,
+    inputForNoteGeneration.meaning!!,
+    Language.Spanish,
+    deckId,
+  );
+  setGeneratedNote(ankiNote);
+  setGenerationStatus(NoteGanarationStatus.Generated);
+};
+
 interface AnkiCardsPickerProps {
   generatedNote: AnkiNote;
   setGeneratedNote: (generatedNote: AnkiNote) => void;
   setGenerationStatus: (generationStatus: NoteGanarationStatus) => void;
+  inputForNoteGeneration: InputForNoteGeneration;
 }
 
 export function AnkiCardsPicker({
   generatedNote,
   setGeneratedNote,
   setGenerationStatus,
+  inputForNoteGeneration,
 }: AnkiCardsPickerProps) {
   const handleCardClick = (index: number) => {
     const updatedCards = generatedNote.cards.map((card, i) =>
@@ -37,6 +62,9 @@ export function AnkiCardsPicker({
     );
     setGeneratedNote({ ...generatedNote, cards: updatedCards });
   };
+
+  const searchParams = useSearchParams();
+  const deckId = Number(searchParams.get("deckId")!!);
 
   return (
     <div>
@@ -83,6 +111,25 @@ export function AnkiCardsPicker({
           onClick={() => saveNote(generatedNote, setGenerationStatus)}
         >
           Save Note
+        </Button>
+        <Button
+          variant="outline"
+          onClick={() =>
+            regenerateNote(
+              setGenerationStatus,
+              setGeneratedNote,
+              inputForNoteGeneration,
+              deckId,
+            )
+          }
+        >
+          Regenerate
+        </Button>
+        <Button
+          variant="outline"
+          onClick={() => setGenerationStatus(NoteGanarationStatus.NotGenerated)}
+        >
+          Discard
         </Button>
       </div>
     </div>

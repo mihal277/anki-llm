@@ -78,6 +78,11 @@ export enum NoteGanarationStatus {
   Generated = "Generated",
 }
 
+export interface InputForNoteGeneration {
+  wordOrExpression: string | undefined;
+  meaning: string | undefined;
+}
+
 function CreateNotesPageContent() {
   // preventing hydration errors: https://nextjs.org/docs/messages/react-hydration-error
   const [isClient, setIsClient] = useState(false);
@@ -88,6 +93,11 @@ function CreateNotesPageContent() {
   const [generationStatus, setGenerationStatus] = useState(
     NoteGanarationStatus.NotGenerated,
   );
+  const [inputForNoteGeneration, setInputForNoteGeneration] =
+    useState<InputForNoteGeneration>({
+      wordOrExpression: undefined,
+      meaning: undefined,
+    });
 
   const searchParams = useSearchParams();
   const deckId = Number(searchParams.get("deckId")!!);
@@ -104,6 +114,7 @@ function CreateNotesPageContent() {
             <NotesCreationInputForm
               setGenerationStatus={setGenerationStatus}
               setGeneratedNote={setGeneratedNote}
+              setInputForNoteGeneration={setInputForNoteGeneration}
             />
           ) : (
             generationStatus === NoteGanarationStatus.Generated && (
@@ -111,6 +122,7 @@ function CreateNotesPageContent() {
                 generatedNote={generatedNote!!}
                 setGeneratedNote={setGeneratedNote}
                 setGenerationStatus={setGenerationStatus}
+                inputForNoteGeneration={inputForNoteGeneration}
               />
             )
           )}
