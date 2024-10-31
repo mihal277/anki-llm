@@ -9,6 +9,7 @@ import {
   ipaPronunciationDescription,
   getDataForAnkiPrompt,
   simpleExampleSentenceDescription,
+  postprocessedWordOrExpressionDeescription as postprocessedWordOrExpressionDescription,
 } from "./prompts";
 import {
   ChatCompletionTool,
@@ -55,11 +56,19 @@ export async function POST(request: NextRequest) {
                 language: language,
               }),
             },
+            postprocessed_word_or_expression: {
+              type: "string",
+              description: postprocessedWordOrExpressionDescription(
+                language,
+                word_or_expression,
+              ),
+            },
           },
           required: [
             "ipa_pronuncation",
             "easy_definition",
             "simple_example_sentence",
+            "postprocessed_word_or_expression",
           ],
         },
       },

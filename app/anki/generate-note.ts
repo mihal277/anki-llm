@@ -42,7 +42,7 @@ export const generateAnkiNote = async (
 
   const normalizedEasyDefinition = rtrim(responseJson.easy_definition, " .");
   return getSpanishNote(
-    wordOrExpression,
+    responseJson.postprocessed_word_or_expression,
     postprocessPronunciation(responseJson.ipa_pronuncation),
     normalizedEasyDefinition,
     responseJson.simple_example_sentence,
