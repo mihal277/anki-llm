@@ -2,7 +2,8 @@ import { Language } from "@/app/language";
 
 export const ipaPronunciationDescription = `the pronunciation of the word/expression \
 in the International Phonetic Alphabet. You provide the pronunciation inside square brackets.
-The pronunciation does not include the article at the beginning, if it is provided.`;
+The pronunciation does not include the article at the beginning, if it is provided.
+The pronunciation is correct even if the provided word is not`;
 
 export const easyDefinitionDescription = ($: { language: Language }) =>
   `a short and simple definition of the word \
@@ -12,7 +13,8 @@ without defining it in other languages. \
 Don't use the word/expression in the definition \
 (also, don't use near-synonyms with common root etc.). \
 The definition should only contain very common words, \
-ones a beginner student would know`;
+ones a beginner student would know. \
+Make sure it's as short as possible`;
 
 export const simpleExampleSentenceDescription = ($: {
   language: Language;
@@ -28,22 +30,28 @@ const pronunciationExamplesSpanish = `
   la vista: [ˈbista] (note that the article is not inlcuded),
   la boca: [ˈboka] (note that the article is not inlcuded),
   enseguida: [enseˈɣiða],
-  conseguir: [konseˈɣir]
+  conseguir: [konseˈɣir],
+  campan: [kamˈpana] (note that the pronunciation is provided for the corrected word campana),
+  enseguda: [enseˈɣiða] (note that the pronunciation is provided for the corrected word enseguida)
 `;
 
 const pronunciationExamplesEnglish = `
   perform: [pəˈfɔ:m],
+  prform: [pəˈfɔ:m] (note that the pronunciation is provided for the corrected word perform),
   border: [ˈbɔ:dəʳ],
-  a border: [ˈbɔ:dəʳ] (note that the article is not inlcuded),,
+  a border: [ˈbɔ:dəʳ] (note that the article is not inlcuded),
   almost: [ˈɔ:lməʊst],
+  almst: [ˈɔ:lməʊst] (note that the pronunciation is provided for the corrected word almost),
   drunk: [drʌŋk]
 `;
 
 const pronunciationExamplesGerman = `
   krank: [kraŋk],
+  krnk: [kraŋk] (note that the pronunciation is provided for the corrected word krank),
   Wirtschaft: [ˈvɪrtʃaft],
   die Wirtschaft: [ˈvɪrtʃaft] (note that the article is not inlcuded),
   gesund: [gəˈzʊnt],
+  gesnd: [gəˈzʊnt] (note that the pronunciation is provided for the corrected word gesund),
   Beziehung: [bəˈtsi:ʊŋ] 
 `;
 
@@ -126,8 +134,9 @@ export const getDataForAnkiPrompt = ($: {
 
   When providing the pronunciation, here are some examples:
   ${pronunciationExamplesMap[$.language]}
-  They are taken from a dictionary.
+  They are as if taken from a dictionary.
   You provide the pronunciation inside square brackets.
+  You provide a pronunciation for a real word even if it contains a typo.
 
   Here are some examples for the postprocessed version of the word/expression: 
   ${wordOrExpressionPostprocessingExamplesMap[$.language]}.
