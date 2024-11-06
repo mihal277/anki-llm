@@ -16,9 +16,11 @@ import { makeAnkiImportableCSV } from "../anki/csv";
 import { ExternalService } from "../db/db";
 import {
   getAllAnkiNotesOfGivenDeck,
+  getDeckLanguage,
   getDeckName,
   getExternalServiceAPIKey,
 } from "../db/queries";
+import { Language } from "../language";
 
 function downloadBlob(blob: Blob, filename: string) {
   const url = window.URL.createObjectURL(blob);
@@ -32,6 +34,7 @@ function downloadBlob(blob: Blob, filename: string) {
 
 async function handleDownloadAudioFiles(
   contentToMp3Name: Record<string, string>,
+  deckLanguage: Language
 ) {
   // todo: handle when eleven labs api key was not provided
   const elevenLabsApiKey = await getExternalServiceAPIKey(
@@ -45,8 +48,7 @@ async function handleDownloadAudioFiles(
           return {
             content,
             mp3Name,
-            // todo
-            language: "Spanish",
+            language: deckLanguage.valueOf(),
           };
         },
       ),
@@ -68,7 +70,8 @@ async function handleDownloadAnkiDeck(deckId: number) {
   const ankiNotes: AnkiNote[] = await getAllAnkiNotesOfGivenDeck(deckId);
   const { posprecessedAnkiNotes, contentToMp3Name } =
     postprocessNotesForExport(ankiNotes);
-  await handleDownloadAudioFiles(contentToMp3Name);
+  const deckLanguage = await getDeckLanguage(deckId);
+  await handleDownloadAudioFiles(contentToMp3Name, deckLanguage);
   await handleDownloadDeckCSV(posprecessedAnkiNotes, deckId);
 }
 

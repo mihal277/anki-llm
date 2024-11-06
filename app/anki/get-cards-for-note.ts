@@ -1,5 +1,4 @@
 import { Language } from "@/app/language";
-import { AnkiNote, AnkiNoteType } from "@/app/anki/note";
 import { AnkiCard } from "./card";
 import {
   getClozeSentenceToFullSentenceBack,
@@ -38,35 +37,33 @@ import {
   getRawWordToPronunciationAndTargetLangDefWithSentenceFront,
 } from "./card-types/raw-word-to-pronunciation-and-target-lang-def-with-sent";
 
-const getDifferentKindsOfCards = (
+export const getDifferentKindsOfCards = (
   wordOrExpression: string,
   pronunciation: string,
   easyDefinition: string,
   rawExampleSentence: string,
   nativeLangWordMeaning: string,
+  language: Language,
 ): AnkiCard[] => {
   const clozeSentenceToFullSentenceCard: AnkiCard = {
     front: getClozeSentenceToFullSentenceFront(
       rawExampleSentence,
       easyDefinition,
     ),
-    back: getClozeSentenceToFullSentenceBack(
-      rawExampleSentence,
-      Language.Spanish,
-    ),
+    back: getClozeSentenceToFullSentenceBack(rawExampleSentence, language),
     selected_for_export: false,
   };
 
   const fullSentenceToWordWithTargetLangDefCard: AnkiCard = {
     front: getFullSentenceToWordWithTargetLangDefFront(
       rawExampleSentence,
-      Language.Spanish,
+      language,
     ),
     back: getFullSentenceToWordWithTargetLangDefBack(
       wordOrExpression,
       pronunciation,
       easyDefinition,
-      Language.Spanish,
+      language,
     ),
     selected_for_export: false,
   };
@@ -76,7 +73,7 @@ const getDifferentKindsOfCards = (
     back: getNativeLangMeaningToWordBack(
       wordOrExpression,
       pronunciation,
-      Language.Spanish,
+      language,
     ),
     selected_for_export: false,
   };
@@ -87,18 +84,14 @@ const getDifferentKindsOfCards = (
       wordOrExpression,
       pronunciation,
       rawExampleSentence,
-      Language.Spanish,
+      language,
     ),
     selected_for_export: false,
   };
 
   const targetLangDefToWordCard: AnkiCard = {
     front: getTargetLangDefToWordFront(easyDefinition),
-    back: getTargetLangDefToWordBack(
-      wordOrExpression,
-      pronunciation,
-      Language.Spanish,
-    ),
+    back: getTargetLangDefToWordBack(wordOrExpression, pronunciation, language),
     selected_for_export: false,
   };
 
@@ -106,12 +99,12 @@ const getDifferentKindsOfCards = (
     front: getWordToNativeLangeMeaningWithSentFront(
       wordOrExpression,
       pronunciation,
-      Language.Spanish,
+      language,
     ),
     back: getWordToNativeLangeMeaningWithSentBack(
       nativeLangWordMeaning,
       rawExampleSentence,
-      Language.Spanish,
+      language,
     ),
     selected_for_export: false,
   };
@@ -120,12 +113,12 @@ const getDifferentKindsOfCards = (
     front: getWordToTargetLangDefWithSentenceFront(
       wordOrExpression,
       pronunciation,
-      Language.Spanish,
+      language,
     ),
     back: getWordToTargetLangDefWithSentenceBack(
       easyDefinition,
       rawExampleSentence,
-      Language.Spanish,
+      language,
     ),
     selected_for_export: false,
   };
@@ -134,13 +127,13 @@ const getDifferentKindsOfCards = (
     front: getWordToTargetLangDefAndNativeMeaningWithSentenceFront(
       wordOrExpression,
       pronunciation,
-      Language.Spanish,
+      language,
     ),
     back: getWordToTargetLangDefAndNativeMeaningWithSentenceBack(
       easyDefinition,
       nativeLangWordMeaning,
       rawExampleSentence,
-      Language.Spanish,
+      language,
     ),
     selected_for_export: false,
   };
@@ -148,13 +141,13 @@ const getDifferentKindsOfCards = (
   const rawWordToPronunciationAndTargetLangDefWithSentenceCard: AnkiCard = {
     front: getRawWordToPronunciationAndTargetLangDefWithSentenceFront(
       wordOrExpression,
-      Language.Spanish,
+      language,
     ),
     back: getRawWordToPronunciationAndTargetLangDefWithSentenceBack(
       pronunciation,
       easyDefinition,
       rawExampleSentence,
-      Language.Spanish,
+      language,
     ),
     selected_for_export: false,
   };
@@ -170,26 +163,4 @@ const getDifferentKindsOfCards = (
     wordToTargetLangDefAndNativeMeaningWithSentenceCard,
     rawWordToPronunciationAndTargetLangDefWithSentenceCard,
   ];
-};
-
-export const getNote = (
-  wordOrExpression: string,
-  pronunciation: string,
-  easyDefinition: string,
-  rawExampleSentence: string,
-  nativeLangWordMeaning: string,
-  deckId: number,
-): AnkiNote => {
-  return {
-    wordOrExpression: wordOrExpression,
-    definition: easyDefinition,
-    ankiDeckId: deckId,
-    cards: getDifferentKindsOfCards(
-      wordOrExpression,
-      pronunciation,
-      easyDefinition,
-      rawExampleSentence,
-      nativeLangWordMeaning,
-    ),
-  };
 };

@@ -1,4 +1,5 @@
 import { AnkiNote } from "../anki/note";
+import { Language } from "../language";
 import { db, ExternalService } from "./db";
 
 export const getExternalServiceAPIKey = async (
@@ -48,4 +49,10 @@ export const getDeckName = async (deckId: number): Promise<string> => {
   const deck = await db.ankiDecks.where("id").equals(deckId).first();
   if (deck === undefined) throw Error(`Deck with id ${deckId} not found`);
   return deck.name;
+};
+
+export const getDeckLanguage = async (deckId: number): Promise<Language> => {
+  const deck = await db.ankiDecks.where("id").equals(deckId).first();
+  if (deck === undefined) throw Error(`Deck with id ${deckId} not found`);
+  return deck.language;
 };

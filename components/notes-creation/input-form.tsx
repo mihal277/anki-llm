@@ -62,7 +62,6 @@ export function NotesCreationInputForm({
     const ankiNote = await generateAnkiNote(
       data.wordOrExpression,
       data.definition,
-      Language.Spanish,
       deckId,
     );
     setGeneratedNote(ankiNote);

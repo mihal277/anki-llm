@@ -9,7 +9,6 @@ import { saveNewNote } from "@/app/db/queries";
 import { AnkiNote } from "@/app/anki/note";
 import { Card, CardContent } from "../ui/card";
 import DOMPurify from "dompurify";
-import { Language } from "@/app/language";
 import { useSearchParams } from "next/navigation";
 
 const stripMp3TagFromAnkiCardContent = (content: string): string => {
@@ -34,7 +33,6 @@ const regenerateNote = async (
   const ankiNote = await generateAnkiNote(
     inputForNoteGeneration.wordOrExpression!!,
     inputForNoteGeneration.meaning!!,
-    Language.Spanish,
     deckId,
   );
   setGeneratedNote(ankiNote);
