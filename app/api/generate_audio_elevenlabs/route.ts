@@ -1,8 +1,8 @@
-import { Language, getLanguage, languageToISO6391 } from "@/app/language";
+import { Language, getLanguage } from "@/app/language";
 import JSZip from "jszip";
 import { NextRequest, NextResponse } from "next/server";
 import { ElevenLabsClient } from "elevenlabs";
-import { getSharedVoicesExpectedInLibrary, getVoiceNameFor } from "./voices";
+import { getModelParams, getSharedVoicesExpectedInLibrary } from "./voices";
 
 const addVoicesToLibrary = async (
   client: ElevenLabsClient,
@@ -57,42 +57,15 @@ const addSharedVoicesToLibrary = async (
   await addVoicesToLibrary(client, sharedVoicesStillNotInLibrary);
 };
 
-const getModelAndLanguageCode = (
-  language: Language,
-): {
-  model: string;
-  languageCode: string | undefined;
-} => {
-  switch (language) {
-    case Language.Spanish:
-      return {
-        model: "eleven_turbo_v2_5",
-        languageCode: languageToISO6391(language),
-      };
-    case "German":
-      return {
-        model: "eleven_turbo_v2_5",
-        languageCode: languageToISO6391(language),
-      };
-    case "English":
-      return {
-        model: "eleven_multilingual_v2",
-        languageCode: undefined,
-      };
-    default:
-      throw Error(`Language ${language} not supported`);
-  }
-};
-
 const streamAudioFromElevenLabs = async (
   textInput: string,
   language: Language,
   client: ElevenLabsClient,
 ): Promise<Buffer> => {
-  const { model, languageCode } = getModelAndLanguageCode(language);
+  const { voice, languageCode, model } = getModelParams(textInput, language);
 
   const audioStream = await client.generate({
-    voice: getVoiceNameFor(textInput, language),
+    voice: voice,
     model_id: model,
     text: textInput,
     language_code: languageCode,

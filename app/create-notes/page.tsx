@@ -34,7 +34,7 @@ function downloadBlob(blob: Blob, filename: string) {
 
 async function handleDownloadAudioFiles(
   contentToMp3Name: Record<string, string>,
-  deckLanguage: Language
+  deckLanguage: Language,
 ) {
   // todo: handle when eleven labs api key was not provided
   const elevenLabsApiKey = await getExternalServiceAPIKey(

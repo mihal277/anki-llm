@@ -1,4 +1,4 @@
-import { Language } from "@/app/language";
+import { Language, languageToISO6391 } from "@/app/language";
 
 export const spanishSharedVoices = [
   {
@@ -24,6 +24,15 @@ export const germanSharedVoices = [
   },
 ];
 
+export const englishSharedVoices = [
+  {
+    publicUserId:
+      "4e120f88d43f125a4c1f56885db63990e17568c80c5cca2f9f3a6459230fbeb1",
+    voiceId: "XjLkpWUlnhS8i7gGz3lZ",
+    name: "David Castlemore - Newsreader and Educator",
+  },
+];
+
 // TODO: add more after verifying shore inputs don't result in gibberish
 const premadeVoiceNames = ["Roger"];
 
@@ -41,23 +50,58 @@ export const getSharedVoicesExpectedInLibrary = (language: Language) => {
 const getRandomItem = <T>(set: Set<T>) =>
   Array.from(set)[Math.floor(Math.random() * set.size)];
 
-export const getVoiceNameFor = (
+export interface ElevenLabsModelParams {
+  model: string;
+  languageCode: string | undefined;
+  voice: string;
+}
+
+function countWords(str: string): number {
+  const words = str.trim().split(/\s+/);
+  return words.filter((word) => word.length > 0).length;
+}
+
+export const getModelParams = (
   textInput: string,
   language: Language,
-): string => {
+): ElevenLabsModelParams => {
   // The assumption is that all shared voices are in the library!
   // TODO: support default voices for longer spanish/german sentences.
+
   switch (language) {
     case Language.Spanish:
-      return getRandomItem(
-        new Set(spanishSharedVoices.map((voice) => voice.name)),
-      );
+      return {
+        voice: getRandomItem(
+          new Set(spanishSharedVoices.map((voice) => voice.name)),
+        ),
+        model: "eleven_turbo_v2_5",
+        languageCode: languageToISO6391(language),
+      };
     case "German":
-      return getRandomItem(
-        new Set(germanSharedVoices.map((voice) => voice.name)),
-      );
+      return {
+        voice: getRandomItem(
+          new Set(germanSharedVoices.map((voice) => voice.name)),
+        ),
+        model: "eleven_turbo_v2_5",
+        languageCode: languageToISO6391(language),
+      };
     case "English":
-      return getRandomItem(new Set(premadeVoiceNames));
+      // todo make similar for other languages, make a const
+      if (countWords(textInput) > 5) {
+        return {
+          voice: getRandomItem(new Set(premadeVoiceNames)),
+          model: "eleven_multilingual_v2",
+          languageCode: undefined,
+        };
+      } else {
+        return {
+          voice: getRandomItem(
+            new Set(englishSharedVoices.map((voice) => voice.name)),
+          ),
+          model: "eleven_turbo_v2_5",
+          languageCode: languageToISO6391(language),
+        };
+      }
     default:
       throw Error(`Language ${language} not supported`);
   }
