@@ -1,16 +1,16 @@
 import { Language } from "@/app/language";
 import { AnkiCardSideData } from "../card";
 
-export function getNativeLangMeaningToWordFront(
-  nativeLangWordMeaning: string,
+export function getDefinitionCard2Front(
+  easyDefinition: string,
 ): AnkiCardSideData {
   return {
-    contentHTML: nativeLangWordMeaning,
+    contentHTML: easyDefinition,
     audioData: [],
   };
 }
 
-export function getNativeLangMeaningToWordBack(
+export function getDefinitionCard2Back(
   wordOrExpression: string,
   pronunciation: string,
   language: Language,

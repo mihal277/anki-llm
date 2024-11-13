@@ -3,34 +3,28 @@ import { AnkiCardSideData } from "../card";
 import {
   getNormalizedExampleSentence,
   getNormalizedExampleSentenceWithBoldWord,
+  getNormalizedExampleSentenceWithWordUnderscored,
 } from "../normalized-example-sentence";
 
-export function getWordToTargetLangDefAndNativeMeaningWithSentenceFront(
-  wordOrExpression: string,
-  pronunciation: string,
-  language: Language,
+export function getClozeCard1Front(
+  rawExampleSentence: string,
+  easyDefinition: string,
 ): AnkiCardSideData {
+  const underscoredNormalizedSentence =
+    getNormalizedExampleSentenceWithWordUnderscored(rawExampleSentence);
   return {
-    contentHTML: `${wordOrExpression} ${pronunciation}<br><br>[sound:0.mp3]`,
-    audioData: [
-      {
-        language: language,
-        content: wordOrExpression,
-      },
-    ],
+    contentHTML: `${easyDefinition}:<br><br>${underscoredNormalizedSentence}`,
+    audioData: [],
   };
 }
 
-export function getWordToTargetLangDefAndNativeMeaningWithSentenceBack(
-  easyDefinition: string,
-  nativeLangWordMeaning: string,
+export function getClozeCard1Back(
   rawExampleSentence: string,
   language: Language,
 ): AnkiCardSideData {
   const normalizedBoldSentence =
     getNormalizedExampleSentenceWithBoldWord(rawExampleSentence);
-  const contentHTML = `${easyDefinition} (${nativeLangWordMeaning})\
-  <br><br>${normalizedBoldSentence}<br><br>[sound:0.mp3]`;
+  const contentHTML = `${normalizedBoldSentence}<br><br>[sound:0.mp3]`;
   return {
     contentHTML: contentHTML,
     audioData: [

@@ -5,12 +5,13 @@ import {
   getNormalizedExampleSentenceWithBoldWord,
 } from "../normalized-example-sentence";
 
-export function getRawWordToPronunciationAndTargetLangDefWithSentenceFront(
+export function getTargetWordCard3Front(
   wordOrExpression: string,
+  pronunciation: string,
   language: Language,
 ): AnkiCardSideData {
   return {
-    contentHTML: `${wordOrExpression}<br><br>[sound:0.mp3]`,
+    contentHTML: `${wordOrExpression} ${pronunciation}<br><br>[sound:0.mp3]`,
     audioData: [
       {
         language: language,
@@ -20,15 +21,14 @@ export function getRawWordToPronunciationAndTargetLangDefWithSentenceFront(
   };
 }
 
-export function getRawWordToPronunciationAndTargetLangDefWithSentenceBack(
-  pronunciation: string,
+export function getTargetWordCard3Back(
   easyDefinition: string,
   rawExampleSentence: string,
   language: Language,
 ): AnkiCardSideData {
   const normalizedBoldSentence =
     getNormalizedExampleSentenceWithBoldWord(rawExampleSentence);
-  const contentHTML = `${pronunciation}<br><br>${easyDefinition}<br><br>${normalizedBoldSentence}\
+  const contentHTML = `${easyDefinition}<br><br>${normalizedBoldSentence}\
   <br><br>[sound:0.mp3]`;
   return {
     contentHTML: contentHTML,

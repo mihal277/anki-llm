@@ -5,7 +5,7 @@ import {
   getNormalizedExampleSentenceWithBoldWord,
 } from "../normalized-example-sentence";
 
-export function getWordToNativeLangeMeaningWithSentFront(
+export function getTargetWordCard1Front(
   wordOrExpression: string,
   pronunciation: string,
   language: Language,
@@ -21,7 +21,7 @@ export function getWordToNativeLangeMeaningWithSentFront(
   };
 }
 
-export function getWordToNativeLangeMeaningWithSentBack(
+export function getTargetWordCard1Back(
   nativeLangWordMeaning: string,
   rawExampleSentence: string,
   language: Language,

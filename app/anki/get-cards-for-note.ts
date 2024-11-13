@@ -1,41 +1,41 @@
 import { Language } from "@/app/language";
 import { AnkiCard } from "./card";
 import {
-  getClozeSentenceToFullSentenceBack,
-  getClozeSentenceToFullSentenceFront,
-} from "./card-types/cloze-sentence-to-full-sentence";
+  getClozeCard1Back,
+  getClozeCard1Front,
+} from "./card-types/cloze-card1";
 import {
-  getFullSentenceToWordWithTargetLangDefBack,
-  getFullSentenceToWordWithTargetLangDefFront,
-} from "./card-types/full-sentence-to-word-with-target-lang-def";
+  getSentenceCardBack,
+  getSentenceCardFront,
+} from "./card-types/sentence-card";
 import {
-  getNativeLangMeaningToWordBack,
-  getNativeLangMeaningToWordFront,
-} from "./card-types/native-lang-meaning-to-word";
+  getMeaningCardBack,
+  getMeaningCardFront,
+} from "./card-types/meaning-card";
 import {
-  getTargetLangDefToWordBack,
-  getTargetLangDefToWordFront,
-} from "./card-types/target-lang-def-to-word";
+  getDefinitionCard2Back,
+  getDefinitionCard2Front,
+} from "./card-types/definition-card2";
 import {
-  getTargetLangDefToWordWithSentBack,
-  getTargetLangDefToWordWithSentFront,
-} from "./card-types/target-lang-def-to-word-with-sent";
+  getDefinitionCard1Back,
+  getDefinitionCard1Front,
+} from "./card-types/definition-card1";
 import {
-  getWordToNativeLangeMeaningWithSentBack,
-  getWordToNativeLangeMeaningWithSentFront,
-} from "./card-types/word-to-native-lang-meaning-with-sent";
+  getTargetWordCard1Back,
+  getTargetWordCard1Front,
+} from "./card-types/target-word-card1";
 import {
-  getWordToTargetLangDefWithSentenceBack,
-  getWordToTargetLangDefWithSentenceFront,
-} from "./card-types/word-to-target-lang-def-with-sent";
+  getTargetWordCard3Back,
+  getTargetWordCard3Front,
+} from "./card-types/target-word-card3";
 import {
-  getWordToTargetLangDefAndNativeMeaningWithSentenceBack,
-  getWordToTargetLangDefAndNativeMeaningWithSentenceFront,
-} from "./card-types/word-to-target-lang-def-and-nat-meaning-with-sent";
+  getTargetWordCard2Back,
+  getTargetWordCard2Front,
+} from "./card-types/target-word-card2";
 import {
-  getRawWordToPronunciationAndTargetLangDefWithSentenceBack,
-  getRawWordToPronunciationAndTargetLangDefWithSentenceFront,
-} from "./card-types/raw-word-to-pronunciation-and-target-lang-def-with-sent";
+  getClozeCard2Back,
+  getClozeCard2Front,
+} from "./card-types/cloze-card2";
 
 export const getDifferentKindsOfCards = (
   wordOrExpression: string,
@@ -45,21 +45,21 @@ export const getDifferentKindsOfCards = (
   nativeLangWordMeaning: string,
   language: Language,
 ): AnkiCard[] => {
-  const clozeSentenceToFullSentenceCard: AnkiCard = {
-    front: getClozeSentenceToFullSentenceFront(
-      rawExampleSentence,
-      easyDefinition,
-    ),
-    back: getClozeSentenceToFullSentenceBack(rawExampleSentence, language),
+  const clozeCard1: AnkiCard = {
+    front: getClozeCard1Front(rawExampleSentence, easyDefinition),
+    back: getClozeCard1Back(rawExampleSentence, language),
     selected_for_export: false,
   };
 
-  const fullSentenceToWordWithTargetLangDefCard: AnkiCard = {
-    front: getFullSentenceToWordWithTargetLangDefFront(
-      rawExampleSentence,
-      language,
-    ),
-    back: getFullSentenceToWordWithTargetLangDefBack(
+  const clozeCard2: AnkiCard = {
+    front: getClozeCard2Front(rawExampleSentence, nativeLangWordMeaning),
+    back: getClozeCard2Back(rawExampleSentence, language),
+    selected_for_export: false,
+  };
+
+  const sentenceCard: AnkiCard = {
+    front: getSentenceCardFront(rawExampleSentence, language),
+    back: getSentenceCardBack(
       wordOrExpression,
       pronunciation,
       easyDefinition,
@@ -68,19 +68,15 @@ export const getDifferentKindsOfCards = (
     selected_for_export: false,
   };
 
-  const nativeLangMeaningToWordCard: AnkiCard = {
-    front: getNativeLangMeaningToWordFront(nativeLangWordMeaning),
-    back: getNativeLangMeaningToWordBack(
-      wordOrExpression,
-      pronunciation,
-      language,
-    ),
+  const meaningCard: AnkiCard = {
+    front: getMeaningCardFront(nativeLangWordMeaning),
+    back: getMeaningCardBack(wordOrExpression, pronunciation, language),
     selected_for_export: false,
   };
 
-  const targetLangDefToWordWithSentCard: AnkiCard = {
-    front: getTargetLangDefToWordWithSentFront(easyDefinition),
-    back: getTargetLangDefToWordWithSentBack(
+  const definitionCard1: AnkiCard = {
+    front: getDefinitionCard1Front(easyDefinition),
+    back: getDefinitionCard1Back(
       wordOrExpression,
       pronunciation,
       rawExampleSentence,
@@ -89,19 +85,15 @@ export const getDifferentKindsOfCards = (
     selected_for_export: false,
   };
 
-  const targetLangDefToWordCard: AnkiCard = {
-    front: getTargetLangDefToWordFront(easyDefinition),
-    back: getTargetLangDefToWordBack(wordOrExpression, pronunciation, language),
+  const definitionCard2: AnkiCard = {
+    front: getDefinitionCard2Front(easyDefinition),
+    back: getDefinitionCard2Back(wordOrExpression, pronunciation, language),
     selected_for_export: false,
   };
 
-  const wordToNativeLangeMeaningWithSentCard: AnkiCard = {
-    front: getWordToNativeLangeMeaningWithSentFront(
-      wordOrExpression,
-      pronunciation,
-      language,
-    ),
-    back: getWordToNativeLangeMeaningWithSentBack(
+  const targetWordCard1: AnkiCard = {
+    front: getTargetWordCard1Front(wordOrExpression, pronunciation, language),
+    back: getTargetWordCard1Back(
       nativeLangWordMeaning,
       rawExampleSentence,
       language,
@@ -109,27 +101,9 @@ export const getDifferentKindsOfCards = (
     selected_for_export: false,
   };
 
-  const wordToTargetLangDefWithSentenceCard: AnkiCard = {
-    front: getWordToTargetLangDefWithSentenceFront(
-      wordOrExpression,
-      pronunciation,
-      language,
-    ),
-    back: getWordToTargetLangDefWithSentenceBack(
-      easyDefinition,
-      rawExampleSentence,
-      language,
-    ),
-    selected_for_export: false,
-  };
-
-  const wordToTargetLangDefAndNativeMeaningWithSentenceCard: AnkiCard = {
-    front: getWordToTargetLangDefAndNativeMeaningWithSentenceFront(
-      wordOrExpression,
-      pronunciation,
-      language,
-    ),
-    back: getWordToTargetLangDefAndNativeMeaningWithSentenceBack(
+  const targetWordCard2: AnkiCard = {
+    front: getTargetWordCard2Front(wordOrExpression, pronunciation, language),
+    back: getTargetWordCard2Back(
       easyDefinition,
       nativeLangWordMeaning,
       rawExampleSentence,
@@ -138,29 +112,21 @@ export const getDifferentKindsOfCards = (
     selected_for_export: false,
   };
 
-  const rawWordToPronunciationAndTargetLangDefWithSentenceCard: AnkiCard = {
-    front: getRawWordToPronunciationAndTargetLangDefWithSentenceFront(
-      wordOrExpression,
-      language,
-    ),
-    back: getRawWordToPronunciationAndTargetLangDefWithSentenceBack(
-      pronunciation,
-      easyDefinition,
-      rawExampleSentence,
-      language,
-    ),
+  const targetWordCard3: AnkiCard = {
+    front: getTargetWordCard3Front(wordOrExpression, pronunciation, language),
+    back: getTargetWordCard3Back(easyDefinition, rawExampleSentence, language),
     selected_for_export: false,
   };
 
   return [
-    clozeSentenceToFullSentenceCard,
-    fullSentenceToWordWithTargetLangDefCard,
-    nativeLangMeaningToWordCard,
-    targetLangDefToWordWithSentCard,
-    targetLangDefToWordCard,
-    wordToNativeLangeMeaningWithSentCard,
-    wordToTargetLangDefWithSentenceCard,
-    wordToTargetLangDefAndNativeMeaningWithSentenceCard,
-    rawWordToPronunciationAndTargetLangDefWithSentenceCard,
+    clozeCard1,
+    clozeCard2,
+    sentenceCard,
+    meaningCard,
+    definitionCard1,
+    definitionCard2,
+    targetWordCard1,
+    targetWordCard3,
+    targetWordCard2,
   ];
 };

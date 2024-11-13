@@ -5,7 +5,7 @@ import {
   getNormalizedExampleSentenceWithBoldWord,
 } from "../normalized-example-sentence";
 
-export function getFullSentenceToWordWithTargetLangDefFront(
+export function getSentenceCardFront(
   rawExampleSentence: string,
   language: Language,
 ): AnkiCardSideData {
@@ -23,7 +23,7 @@ export function getFullSentenceToWordWithTargetLangDefFront(
   };
 }
 
-export function getFullSentenceToWordWithTargetLangDefBack(
+export function getSentenceCardBack(
   wordOrExpression: string,
   pronunciation: string,
   easyDefinition: string,

@@ -3,27 +3,28 @@ import { AnkiCardSideData } from "../card";
 import {
   getNormalizedExampleSentence,
   getNormalizedExampleSentenceWithBoldWord,
+  getNormalizedExampleSentenceWithWordUnderscored,
 } from "../normalized-example-sentence";
 
-export function getTargetLangDefToWordWithSentFront(
-  easyDefinition: string,
+export function getClozeCard2Front(
+  rawExampleSentence: string,
+  nativeLangWordMeaning: string,
 ): AnkiCardSideData {
+  const underscoredNormalizedSentence =
+    getNormalizedExampleSentenceWithWordUnderscored(rawExampleSentence);
   return {
-    contentHTML: easyDefinition,
+    contentHTML: `${nativeLangWordMeaning}:<br><br>${underscoredNormalizedSentence}`,
     audioData: [],
   };
 }
 
-export function getTargetLangDefToWordWithSentBack(
-  wordOrExpression: string,
-  pronunciation: string,
+export function getClozeCard2Back(
   rawExampleSentence: string,
   language: Language,
 ): AnkiCardSideData {
   const normalizedBoldSentence =
     getNormalizedExampleSentenceWithBoldWord(rawExampleSentence);
-  const contentHTML = `${wordOrExpression} ${pronunciation}\
-  <br><br>${normalizedBoldSentence}<br><br>[sound:0.mp3]`;
+  const contentHTML = `${normalizedBoldSentence}<br><br>[sound:0.mp3]`;
   return {
     contentHTML: contentHTML,
     audioData: [
