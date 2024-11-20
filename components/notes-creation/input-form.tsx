@@ -14,13 +14,11 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { generateAnkiNote } from "@/app/anki/generate-note";
-import { Language } from "@/app/language";
 import {
-  InputForNoteGeneration,
   NoteGanarationStatus,
+  NoteGenerationState,
 } from "@/app/create-notes/page";
 import { useSearchParams } from "next/navigation";
-import { AnkiNote } from "@/app/anki/note";
 
 const FormSchema = z.object({
   wordOrExpression: z.string().min(1, {
@@ -32,15 +30,11 @@ const FormSchema = z.object({
 });
 
 interface NotesCreationInputFormProps {
-  setGenerationStatus: (generationStatus: NoteGanarationStatus) => void;
-  setGeneratedNote: (generatedNote: AnkiNote) => void;
-  setInputForNoteGeneration: (inputForNote: InputForNoteGeneration) => void;
+  setNoteGenerationState: (noteGenerationState: NoteGenerationState) => void;
 }
 
 export function NotesCreationInputForm({
-  setGenerationStatus,
-  setGeneratedNote,
-  setInputForNoteGeneration,
+  setNoteGenerationState,
 }: NotesCreationInputFormProps) {
   const searchParams = useSearchParams();
   const deckId = Number(searchParams.get("deckId")!!);
@@ -54,23 +48,28 @@ export function NotesCreationInputForm({
   });
 
   async function onSubmit(data: z.infer<typeof FormSchema>) {
-    setGenerationStatus(NoteGanarationStatus.GenerationRunning);
-    setInputForNoteGeneration({
+    setNoteGenerationState({
+      noteGenerationStatus: NoteGanarationStatus.GenerationRunning,
       wordOrExpression: data.wordOrExpression,
       meaning: data.definition,
+      generatedNote: undefined,
     });
     const ankiNote = await generateAnkiNote(
       data.wordOrExpression,
       data.definition,
       deckId,
     );
-    setGeneratedNote(ankiNote);
-    setGenerationStatus(NoteGanarationStatus.Generated);
+    setNoteGenerationState({
+      noteGenerationStatus: NoteGanarationStatus.ShowGenerated,
+      wordOrExpression: data.wordOrExpression,
+      meaning: data.definition,
+      generatedNote: ankiNote,
+    });
   }
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="w-2/3 space-y-6">
+      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
         <FormField
           control={form.control}
           name="wordOrExpression"

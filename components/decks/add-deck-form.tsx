@@ -3,7 +3,6 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
-import { v4 as uuid } from "uuid";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -42,6 +41,7 @@ interface AnkiDeckFormProps {
 export function AddDeckForm({ setIsPopoverOpen }: AnkiDeckFormProps) {
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
+    defaultValues: { deckName: "", language: undefined },
   });
 
   async function onSubmit(data: z.infer<typeof FormSchema>) {

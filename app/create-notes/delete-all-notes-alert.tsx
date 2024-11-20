@@ -9,32 +9,32 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
-import { Button } from "@/components/ui/button";
-import { Trash2 } from "lucide-react";
 
 interface DeleteDeckProps {
-  onDeleteDeck: () => void;
+  onDeleteAllNotesFromGivenDeck: () => void;
+  triggerElement: React.ReactNode;
 }
 
-export function DeleteDeckAlert({ onDeleteDeck }: DeleteDeckProps) {
+export function DeleteAllNotesAlert({
+  onDeleteAllNotesFromGivenDeck,
+  triggerElement,
+}: DeleteDeckProps) {
   return (
     <AlertDialog>
-      <AlertDialogTrigger asChild>
-        <Button variant="outline">
-          <Trash2 />
-        </Button>
-      </AlertDialogTrigger>
+      <AlertDialogTrigger asChild>{triggerElement}</AlertDialogTrigger>
       <AlertDialogContent>
         <AlertDialogHeader>
           <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
           <AlertDialogDescription>
-            This action cannot be undone. This will permanently delete your deck
-            and all its notes from the local database.
+            This action cannot be undone. This will permanently delete all the
+            notes from this deck.
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
           <AlertDialogCancel>Cancel</AlertDialogCancel>
-          <AlertDialogAction onClick={onDeleteDeck}>Delete</AlertDialogAction>
+          <AlertDialogAction onClick={onDeleteAllNotesFromGivenDeck}>
+            Delete
+          </AlertDialogAction>
         </AlertDialogFooter>
       </AlertDialogContent>
     </AlertDialog>

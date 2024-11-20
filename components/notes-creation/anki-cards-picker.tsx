@@ -1,12 +1,11 @@
 import React from "react";
 import { Button } from "../ui/button";
 import {
-  InputForNoteGeneration,
   NoteGanarationStatus,
+  NoteGenerationState,
 } from "@/app/create-notes/page";
 import { generateAnkiNote } from "@/app/anki/generate-note";
-import { saveNewNote } from "@/app/db/queries";
-import { AnkiNote } from "@/app/anki/note";
+import { saveNote as saveNoteInDB } from "@/app/db/queries";
 import { Card, CardContent } from "../ui/card";
 import DOMPurify from "dompurify";
 import { useSearchParams } from "next/navigation";
@@ -16,49 +15,63 @@ const stripMp3TagFromAnkiCardContent = (content: string): string => {
 };
 
 const saveNote = (
-  generatedNote: AnkiNote,
-  setGenerationStatus: (generationStatus: NoteGanarationStatus) => void,
+  noteGenerationState: NoteGenerationState,
+  setNoteGenerationState: (noteGenerationState: NoteGenerationState) => void,
 ) => {
-  saveNewNote(generatedNote);
-  setGenerationStatus(NoteGanarationStatus.NotGenerated);
+  saveNoteInDB(noteGenerationState.generatedNote!!);
+  setNoteGenerationState({
+    ...noteGenerationState,
+    noteGenerationStatus: NoteGanarationStatus.NotGenerated,
+  });
 };
 
 const regenerateNote = async (
-  setGenerationStatus: (generationStatus: NoteGanarationStatus) => void,
-  setGeneratedNote: (generatedNote: AnkiNote) => void,
-  inputForNoteGeneration: InputForNoteGeneration,
+  noteGenerationState: NoteGenerationState,
+  setNoteGenerationState: (noteGenerationState: NoteGenerationState) => void,
   deckId: number,
 ) => {
-  setGenerationStatus(NoteGanarationStatus.GenerationRunning);
-  const ankiNote = await generateAnkiNote(
-    inputForNoteGeneration.wordOrExpression!!,
-    inputForNoteGeneration.meaning!!,
+  setNoteGenerationState({
+    ...noteGenerationState,
+    noteGenerationStatus: NoteGanarationStatus.GenerationRunning,
+  });
+  const newAnkiNote = await generateAnkiNote(
+    noteGenerationState.wordOrExpression!!,
+    noteGenerationState.meaning!!,
     deckId,
   );
-  setGeneratedNote(ankiNote);
-  setGenerationStatus(NoteGanarationStatus.Generated);
+  setNoteGenerationState({
+    ...noteGenerationState,
+    generatedNote: {
+      ...newAnkiNote,
+      // if the user regenerates the note that is already in db,
+      // we want to keep the id so that when saving, the note is overwritten
+      id: noteGenerationState.generatedNote?.id,
+    },
+    noteGenerationStatus: NoteGanarationStatus.ShowGenerated,
+  });
 };
 
 interface AnkiCardsPickerProps {
-  generatedNote: AnkiNote;
-  setGeneratedNote: (generatedNote: AnkiNote) => void;
-  setGenerationStatus: (generationStatus: NoteGanarationStatus) => void;
-  inputForNoteGeneration: InputForNoteGeneration;
+  noteGenerationState: NoteGenerationState;
+  setNoteGenerationState: (noteGenerationState: NoteGenerationState) => void;
 }
 
 export function AnkiCardsPicker({
-  generatedNote,
-  setGeneratedNote,
-  setGenerationStatus,
-  inputForNoteGeneration,
+  noteGenerationState,
+  setNoteGenerationState,
 }: AnkiCardsPickerProps) {
+  const generatedNote = noteGenerationState.generatedNote!!;
   const handleCardClick = (index: number) => {
     const updatedCards = generatedNote.cards.map((card, i) =>
       i === index
         ? { ...card, selected_for_export: !card.selected_for_export }
         : card,
     );
-    setGeneratedNote({ ...generatedNote, cards: updatedCards });
+    const updatedNote = { ...generatedNote, cards: updatedCards };
+    setNoteGenerationState({
+      ...noteGenerationState,
+      generatedNote: updatedNote,
+    });
   };
 
   const searchParams = useSearchParams();
@@ -106,26 +119,33 @@ export function AnkiCardsPicker({
       <div className="pl-4">
         <Button
           variant="outline"
-          onClick={() => saveNote(generatedNote, setGenerationStatus)}
+          onClick={() => saveNote(noteGenerationState, setNoteGenerationState)}
         >
           Save Note
         </Button>
+        {noteGenerationState.noteGenerationStatus !==
+          NoteGanarationStatus.EditPreviouslySaved && (
+          <Button
+            variant="outline"
+            onClick={() =>
+              regenerateNote(
+                noteGenerationState,
+                setNoteGenerationState,
+                deckId,
+              )
+            }
+          >
+            Regenerate
+          </Button>
+        )}
         <Button
           variant="outline"
           onClick={() =>
-            regenerateNote(
-              setGenerationStatus,
-              setGeneratedNote,
-              inputForNoteGeneration,
-              deckId,
-            )
+            setNoteGenerationState({
+              ...noteGenerationState,
+              noteGenerationStatus: NoteGanarationStatus.NotGenerated,
+            })
           }
-        >
-          Regenerate
-        </Button>
-        <Button
-          variant="outline"
-          onClick={() => setGenerationStatus(NoteGanarationStatus.NotGenerated)}
         >
           Discard
         </Button>
