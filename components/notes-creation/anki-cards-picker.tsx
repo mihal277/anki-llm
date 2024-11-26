@@ -89,7 +89,7 @@ export function AnkiCardsPicker({
             <Card
               className={`w-64 h-64 ${
                 card.selected_for_export
-                  ? "outline outline-4 outline-black"
+                  ? "outline outline-4 outline-card-picker-border"
                   : "border"
               }`}
             >
