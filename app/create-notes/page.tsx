@@ -6,20 +6,16 @@ import { AnkiNote } from "@/app/anki/note";
 import { AnkiCardsPicker } from "@/components/notes-creation/anki-cards-picker";
 import { SidebarProvider } from "@/components/ui/sidebar";
 import { GeneratedNotesSidebar } from "@/components/notes-creation/notes-sidebar";
-import { useSearchParams } from "next/navigation";
+import { AnkiCardsPickerSkeleton } from "@/components/notes-creation/anki-cards-picker-skeleton";
 
 export enum NoteGanarationStatus {
-  NotGenerated = "GenerationNotRequestedYet",
+  GenerationNotRequestedYet = "GenerationNotRequestedYet",
+
   GenerationRunning = "GenerationRunning",
+
   ShowGenerated = "ShowGenerated",
   EditPreviouslySaved = "EditPreviouslySaved",
 }
-
-const showCardsPickerStatuses = [
-  NoteGanarationStatus.ShowGenerated,
-  NoteGanarationStatus.EditPreviouslySaved,
-];
-
 export interface NoteGenerationState {
   noteGenerationStatus: NoteGanarationStatus;
 
@@ -31,11 +27,27 @@ export interface NoteGenerationState {
 function CreateNotesPageContent() {
   const [noteGenerationState, setNoteGenerationState] =
     useState<NoteGenerationState>({
-      noteGenerationStatus: NoteGanarationStatus.NotGenerated,
+      noteGenerationStatus: NoteGanarationStatus.GenerationNotRequestedYet,
       wordOrExpression: undefined,
       meaning: undefined,
       generatedNote: undefined,
     });
+
+  const ankiCardPicker = (
+    <AnkiCardsPicker
+      noteGenerationState={noteGenerationState}
+      setNoteGenerationState={setNoteGenerationState}
+    />
+  );
+
+  const status2component = {
+    [NoteGanarationStatus.GenerationNotRequestedYet]: (
+      <NotesCreationInputForm setNoteGenerationState={setNoteGenerationState} />
+    ),
+    [NoteGanarationStatus.GenerationRunning]: <AnkiCardsPickerSkeleton />,
+    [NoteGanarationStatus.ShowGenerated]: ankiCardPicker,
+    [NoteGanarationStatus.EditPreviouslySaved]: ankiCardPicker,
+  };
 
   return (
     <SidebarProvider>
@@ -46,21 +58,7 @@ function CreateNotesPageContent() {
       <div>
         {/* uncomment if there's a proper solution, see https://github.com/shadcn-ui/ui/issues/5629 */}
         {/* <SidebarTrigger/> */}
-        {noteGenerationState.noteGenerationStatus ===
-        NoteGanarationStatus.NotGenerated ? (
-          <NotesCreationInputForm
-            setNoteGenerationState={setNoteGenerationState}
-          />
-        ) : (
-          showCardsPickerStatuses.includes(
-            noteGenerationState.noteGenerationStatus,
-          ) && (
-            <AnkiCardsPicker
-              noteGenerationState={noteGenerationState}
-              setNoteGenerationState={setNoteGenerationState}
-            />
-          )
-        )}
+        {status2component[noteGenerationState.noteGenerationStatus]}
       </div>
     </SidebarProvider>
   );

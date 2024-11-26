@@ -21,7 +21,7 @@ const saveNote = (
   saveNoteInDB(noteGenerationState.generatedNote!!);
   setNoteGenerationState({
     ...noteGenerationState,
-    noteGenerationStatus: NoteGanarationStatus.NotGenerated,
+    noteGenerationStatus: NoteGanarationStatus.GenerationNotRequestedYet,
   });
 };
 
@@ -143,7 +143,8 @@ export function AnkiCardsPicker({
           onClick={() =>
             setNoteGenerationState({
               ...noteGenerationState,
-              noteGenerationStatus: NoteGanarationStatus.NotGenerated,
+              noteGenerationStatus:
+                NoteGanarationStatus.GenerationNotRequestedYet,
             })
           }
         >
