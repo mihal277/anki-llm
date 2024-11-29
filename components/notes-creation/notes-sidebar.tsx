@@ -61,12 +61,12 @@ export function GeneratedNotesSidebar({
     fetchDeck();
   }, []);
 
-  const ankiNotes = useLiveQuery(() =>
-    db.ankiNotes.where("ankiDeckId").equals(deckId).toArray(),
+  const reversedAnkiNotes = useLiveQuery(() =>
+    db.ankiNotes.where("ankiDeckId").equals(deckId).reverse().toArray(),
   );
 
-  const numberOfNotes = ankiNotes?.length;
-  const numberOfSelectedCards = ankiNotes?.reduce(
+  const numberOfNotes = reversedAnkiNotes?.length;
+  const numberOfSelectedCards = reversedAnkiNotes?.reduce(
     (total, note) => total + getNumberOfCards(note),
     0,
   );
@@ -74,7 +74,7 @@ export function GeneratedNotesSidebar({
   return (
     // this is a small hack to make the sidebar work with the header.
     // todo: implement a proper solution, https://github.com/shadcn-ui/ui/issues/5629
-    <Sidebar className="top-[3.5rem]">
+    <Sidebar className="top-[3.5rem] bottom-0 h-auto">
       <SidebarHeader>
         {deck?.name ? deck.name : "Loading..."} |{" "}
         {deck?.language ? deck.language : "Loading..."} | Notes:{" "}
@@ -102,7 +102,7 @@ export function GeneratedNotesSidebar({
           <SidebarGroupLabel>Notes</SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
-              {ankiNotes?.map((ankiNote: AnkiNote, i: number) => (
+              {reversedAnkiNotes?.map((ankiNote: AnkiNote, i: number) => (
                 <SidebarMenuItem key={i}>
                   <SidebarMenuButton asChild>
                     <span>
