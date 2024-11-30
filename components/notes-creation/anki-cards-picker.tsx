@@ -88,9 +88,7 @@ export function AnkiCardsPicker({
           >
             <Card
               className={`w-64 h-64 ${
-                card.selected_for_export
-                  ? "outline outline-4 outline-card-picker-border"
-                  : "border"
+                card.selected_for_export ? "outline outline-4" : "border"
               }`}
             >
               <CardContent className="flex flex-col justify-between h-full">

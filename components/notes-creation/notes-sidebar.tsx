@@ -32,6 +32,7 @@ import { handleDownloadAnkiDeck } from "@/app/create-notes/download-notes";
 import { DeleteAllNotesAlert } from "@/app/create-notes/delete-all-notes-alert";
 import { useEffect, useState } from "react";
 import { AnkiDeck } from "@/app/anki/deck";
+import { Badge } from "../ui/badge";
 
 const getNumberOfCards = (ankiNote: AnkiNote): number => {
   return ankiNote.cards.filter((card) => card.selected_for_export === true)
@@ -105,9 +106,10 @@ export function GeneratedNotesSidebar({
               {reversedAnkiNotes?.map((ankiNote: AnkiNote, i: number) => (
                 <SidebarMenuItem key={i}>
                   <SidebarMenuButton asChild>
-                    <span>
-                      {ankiNote.wordOrExpression} | {getNumberOfCards(ankiNote)}
-                    </span>
+                    <div className="flex justify-between">
+                      {ankiNote.wordOrExpression}
+                      <Badge>{getNumberOfCards(ankiNote)}</Badge>
+                    </div>
                   </SidebarMenuButton>
                   <DropdownMenu>
                     <DropdownMenuTrigger asChild>
