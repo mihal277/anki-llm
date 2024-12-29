@@ -13,7 +13,7 @@ import {
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
 
-import {
+import {m"
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
@@ -24,15 +24,12 @@ import { useLiveQuery } from "dexie-react-hooks";
 import { db } from "@/app/db/db";
 import { AnkiNote } from "@/app/anki/note";
 import { deleteAllNotesFromDeck, deleteNote, getDeck } from "@/app/db/queries";
-import {
-  NoteGanarationStatus,
-  NoteGenerationState,
-} from "@/app/create-notes/page";
 import { handleDownloadAnkiDeck } from "@/app/create-notes/download-notes";
 import { DeleteAllNotesAlert } from "@/app/create-notes/delete-all-notes-alert";
 import { useEffect, useState } from "react";
 import { AnkiDeck } from "@/app/anki/deck";
 import { Badge } from "../ui/badge";
+import { NoteGanarationStatus, NoteGenerationState } from "@/app/create-notes/note-generation-enums";
 
 const getNumberOfCards = (ankiNote: AnkiNote): number => {
   return ankiNote.cards.filter((card) => card.selected_for_export === true)
