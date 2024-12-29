@@ -7,22 +7,10 @@ import { AnkiCardsPicker } from "@/components/notes-creation/anki-cards-picker";
 import { SidebarProvider } from "@/components/ui/sidebar";
 import { GeneratedNotesSidebar } from "@/components/notes-creation/notes-sidebar";
 import { AnkiCardsPickerSkeleton } from "@/components/notes-creation/anki-cards-picker-skeleton";
-
-export enum NoteGanarationStatus {
-  GenerationNotRequestedYet = "GenerationNotRequestedYet",
-
-  GenerationRunning = "GenerationRunning",
-
-  ShowGenerated = "ShowGenerated",
-  EditPreviouslySaved = "EditPreviouslySaved",
-}
-export interface NoteGenerationState {
-  noteGenerationStatus: NoteGanarationStatus;
-
-  wordOrExpression: string | undefined;
-  meaning: string | undefined;
-  generatedNote: AnkiNote | undefined;
-}
+import {
+  NoteGanarationStatus,
+  NoteGenerationState,
+} from "./note-generation-enums";
 
 function CreateNotesPageContent() {
   const [noteGenerationState, setNoteGenerationState] =

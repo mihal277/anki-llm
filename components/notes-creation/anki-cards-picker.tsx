@@ -1,14 +1,14 @@
 import React from "react";
 import { Button } from "../ui/button";
-import {
-  NoteGanarationStatus,
-  NoteGenerationState,
-} from "@/app/create-notes/page";
 import { generateAnkiNote } from "@/app/anki/generate-note";
 import { saveNote as saveNoteInDB } from "@/app/db/queries";
 import { Card, CardContent } from "../ui/card";
 import DOMPurify from "dompurify";
 import { useSearchParams } from "next/navigation";
+import {
+  NoteGanarationStatus,
+  NoteGenerationState,
+} from "@/app/create-notes/note-generation-enums";
 
 const stripMp3TagFromAnkiCardContent = (content: string): string => {
   return content.replace(/\[sound:[^\]]+\.mp3\]/g, "").trim();

@@ -14,11 +14,11 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { generateAnkiNote } from "@/app/anki/generate-note";
+import { useSearchParams } from "next/navigation";
 import {
   NoteGanarationStatus,
   NoteGenerationState,
-} from "@/app/create-notes/page";
-import { useSearchParams } from "next/navigation";
+} from "@/app/create-notes/note-generation-enums";
 
 const FormSchema = z.object({
   wordOrExpression: z.string().min(1, {
