@@ -33,6 +33,24 @@ export const englishSharedVoices = [
   },
 ];
 
+export const frenchSharedVoices = [
+  {
+    publicUserId:
+      "cf85fd3407013597c7721531f6fb44212866034556a7b7127a3a41d30d81522b",
+    voiceId: "Qrl71rx6Yg8RvyPYRGCQ",
+    name: "Guillaume - French voice - Narration and Voiceover",
+  },
+];
+
+export const russianSharedVoices = [
+  {
+    publicUserId:
+      "b97690a95ddc81ce0522763133e91ad14a3058d8fd44c9c84a31e29e740ce403",
+    voiceId: "MWyJiWDobXN8FX3CJTdE",
+    name: "Oleg",
+  },
+];
+
 // TODO: add more after verifying shore inputs don't result in gibberish
 const premadeVoiceNames = ["Roger"];
 
@@ -40,8 +58,14 @@ export const getSharedVoicesExpectedInLibrary = (language: Language) => {
   switch (language) {
     case Language.Spanish:
       return spanishSharedVoices;
-    case "German":
+    case Language.German:
       return germanSharedVoices;
+    case Language.English:
+      return englishSharedVoices;
+    case Language.French:
+      return frenchSharedVoices;
+    case Language.Russian:
+      return russianSharedVoices;
     default:
       throw Error(`Language ${language} does not use any shared voices`);
   }
@@ -77,7 +101,7 @@ export const getModelParams = (
         model: "eleven_turbo_v2_5",
         languageCode: languageToISO6391(language),
       };
-    case "German":
+    case Language.German:
       return {
         voice: getRandomItem(
           new Set(germanSharedVoices.map((voice) => voice.name)),
@@ -85,7 +109,7 @@ export const getModelParams = (
         model: "eleven_turbo_v2_5",
         languageCode: languageToISO6391(language),
       };
-    case "English":
+    case Language.English:
       // todo make similar for other languages, make a const
       if (countWords(textInput) > 5) {
         return {
@@ -102,6 +126,22 @@ export const getModelParams = (
           languageCode: languageToISO6391(language),
         };
       }
+    case Language.French:
+      return {
+        voice: getRandomItem(
+          new Set(frenchSharedVoices.map((voice) => voice.name)),
+        ),
+        model: "eleven_turbo_v2_5",
+        languageCode: languageToISO6391(language),
+      };
+    case Language.Russian:
+      return {
+        voice: getRandomItem(
+          new Set(russianSharedVoices.map((voice) => voice.name)),
+        ),
+        model: "eleven_turbo_v2_5",
+        languageCode: languageToISO6391(language),
+      };
     default:
       throw Error(`Language ${language} not supported`);
   }

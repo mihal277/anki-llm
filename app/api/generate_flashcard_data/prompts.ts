@@ -55,10 +55,33 @@ const pronunciationExamplesGerman = `
   Beziehung: [bəˈtsi:ʊŋ] 
 `;
 
+const pronunciationExamplesFrench = `
+  malade: [malad],
+  malaade: [malad] (note that the pronunciation is provided for the corrected word malade),
+  maison: [mɛzɔ̃],
+  la maison: [mɛzɔ̃] (note that the article is not inlcuded),
+  envieux: [ɑ̃vjø, -jøz] (note the pronunciation for both genders),
+  enviux: [ɑ̃vjø, -jøz] (note that the pronunciation for both genders are provided for the corrected word),
+  heureux: [øʀø, -øz] (note the pronunciation for both genders)
+  abattu: [abaty] (note that pronunciation for both genders is the same)
+  effrayant: [efʀɛjɑ̃, ɑ̃t]
+`;
+
+const pronunciationExamplesRussian = `
+  больно́й: [bɐlʲˈnoj],
+  боьно́й: [bɐlʲˈnoj] (note that the pronunciation is provided for the corrected word больно́й),
+  мужчи́на: [mʊˈɕːinə],
+  мужчина: [mʊˈɕːinə] (note that the pronunciation is provided for the corrected word мужчи́на),
+  ско́льзкий: [ˈskolʲskʲɪj],
+  ско́льзки: [ˈskolʲskʲɪj] (note that the pronunciation is provided for the corrected word ско́льзки)
+`;
+
 const pronunciationExamplesMap = {
   [Language.Spanish]: pronunciationExamplesSpanish,
   [Language.English]: pronunciationExamplesEnglish,
   [Language.German]: pronunciationExamplesGerman,
+  [Language.French]: pronunciationExamplesFrench,
+  [Language.Russian]: pronunciationExamplesRussian,
 };
 
 const wordOrExpressionPostprocessingExampleSpanish = `
@@ -90,10 +113,70 @@ const wordOrExpressionPostprocessingExampleGerman = `
   schwarzes Lohc: schwarzes Loch
 `;
 
+const wordOrExpressionPostprocessingExampleFrench = `
+  garçon: le garçon,
+  fleur: la fleur,
+  flur: la fleur,
+  courir: courir,
+  courirr: courir,
+  malade: malade,
+  heureux: heureux (-euse),
+  huereux: heureux (-euse),
+  heureuse: heureux (-euse),
+  douée: doué(e),
+  doué: doué(e)
+`;
+
+// todo: include some grammar
+
+// const wordOrExpressionPostprocessingExampleRussian = `
+//   больно́й: больно́й <бо́лен, больна́, больно́>,
+//   больной: больно́й <бо́лен, больна́, больно́>,
+//   ста́рый: ста́рый <стар, стара́, ста́ро́>,
+//   счастли́вый: счастли́вый <сча́стли́в, -а, -о>,
+//   счастли́вй: счастли́вый <сча́стли́в, -а, -о>,
+//   сла́бый: сла́бый <слаб, слаба́, сла́бо, сла́бы́>,
+//   обы́чный: обы́чный <-чен, -чна>,
+//   мужчи́на: мужчи́на <-ы>,
+//   продаве́ц: продаве́ц <-вца́>,
+//   учи́тель: учи́тель <-я>,
+//   учи́тельница: учи́тельница <-ы>,
+//   шко́ла: шко́ла <-ы>,
+//   де́лать: де́лать <-ю, -ешь [null dk.]с->,
+//   де́лть: де́лать <-ю, -ешь [null dk.]с->,
+//   теря́ть: теря́ть <-ю, -ешь [null dk.]по->,
+//   учи́ться: учи́ться <учу́сь, у́чишься>,
+//   учи́тьяс: учи́ться <учу́сь, у́чишься>,
+//   с тех пор как: с тех пор как
+// `;
+
+const wordOrExpressionPostprocessingExampleRussian = `
+  больно́й: больно́й,
+  больной: больно́й,
+  ста́рый: ста́рый,
+  счастли́вый: счастли́вый,
+  счастли́вй: счастли́вый,
+  сла́бый: сла́бый,
+  обы́чный: обы́чный,
+  мужчи́на: мужчи́на,
+  продаве́ц: продаве́ц,
+  учи́тель: учи́тель,
+  учи́тельница: учи́тельница,
+  шко́ла: шко́ла,
+  де́лать: де́лать,
+  де́лть: де́лать,
+  теря́ть: теря́ть,
+  учи́ться: учи́ться,
+  учи́тьяс: учи́ться,
+  с тех пор как: с тех пор как
+`;
+
 const wordOrExpressionPostprocessingExamplesMap = {
   [Language.Spanish]: wordOrExpressionPostprocessingExampleSpanish,
   [Language.English]: wordOrExpressionPostprocessingExampleEnglish,
   [Language.German]: wordOrExpressionPostprocessingExampleGerman,
+  [Language.French]: wordOrExpressionPostprocessingExampleFrench,
+  [Language.Russian]: wordOrExpressionPostprocessingExampleRussian,
 };
 
 export const postprocessedWordOrExpressionDeescription = (
@@ -103,20 +186,32 @@ export const postprocessedWordOrExpressionDeescription = (
   switch (language) {
     case Language.Spanish:
       return `
-        Postprocessed version of the word/expression ${wordOrExpression}.
-        The postprocessed version of the word/expression is made by fixing any typos and adding
-        the article el/la. You only add the article for a standalone noun (single word).
+        Postprocessed version of the word/expression ${wordOrExpression}. \
+The postprocessed version of the word/expression is made by fixing any typos and adding \
+the article el/la. You only add the article for a standalone noun (single word).
       `;
     case Language.English:
       return `
-        Postprocessed version of the word/expression ${wordOrExpression}.
-        The postprocessed version of the word/expression is made by fixing any typos.
+        Postprocessed version of the word/expression ${wordOrExpression}. \
+The postprocessed version of the word/expression is made by fixing any typos.
       `;
     case Language.German:
       return `
-        Postprocessed version of the word/expression ${wordOrExpression}.
-        The postprocessed version of the word/expression is made by fixing any typos and adding
-        the article der/die/das. You only add the article for a standalone noun (single word).
+        Postprocessed version of the word/expression ${wordOrExpression}. \
+The postprocessed version of the word/expression is made by fixing any typos and adding \
+the article der/die/das. You only add the article for a standalone noun (single word).
+      `;
+    case Language.French:
+      return `
+        Postprocessed version of the word/expression ${wordOrExpression}. \
+The postprocessed version of the word/expression is made by fixing any typos and adding \
+the correct definite article le/la/l'/les. You only add the article for a standalone noun (single word). \
+Additionally, you normalize the adjectives to indicate both genders (as shown in the examples).
+      `;
+    case Language.Russian:
+      return `
+        Postprocessed version of the word/expression ${wordOrExpression}. \
+The postprocessed version of the word/expression is made by fixing any typos.
       `;
   }
 };

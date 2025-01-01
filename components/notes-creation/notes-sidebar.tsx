@@ -29,7 +29,10 @@ import { DeleteAllNotesAlert } from "@/app/create-notes/delete-all-notes-alert";
 import { useEffect, useState } from "react";
 import { AnkiDeck } from "@/app/anki/deck";
 import { Badge } from "../ui/badge";
-import { NoteGanarationStatus, NoteGenerationState } from "@/app/create-notes/note-generation-enums";
+import {
+  NoteGanarationStatus,
+  NoteGenerationState,
+} from "@/app/create-notes/note-generation-enums";
 
 const getNumberOfCards = (ankiNote: AnkiNote): number => {
   return ankiNote.cards.filter((card) => card.selected_for_export === true)
