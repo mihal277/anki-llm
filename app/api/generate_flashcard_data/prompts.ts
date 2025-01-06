@@ -32,7 +32,13 @@ const pronunciationExamplesSpanish = `
   enseguida: [enseˈɣiða],
   conseguir: [konseˈɣir],
   campan: [kamˈpana] (note that the pronunciation is provided for the corrected word campana),
-  enseguda: [enseˈɣiða] (note that the pronunciation is provided for the corrected word enseguida)
+  enseguda: [enseˈɣiða] (note that the pronunciation is provided for the corrected word enseguida),
+  sabiduría: [saβiðuˈria],
+  garrapata: [garraˈpata],
+  honradez: [onrraˈðeθ],
+  clemencia: [kleˈmenθja],
+  rencor: [rreŋˈkor],
+  rozar: [rroˈθar]
 `;
 
 const pronunciationExamplesEnglish = `
