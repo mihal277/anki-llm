@@ -38,7 +38,11 @@ const pronunciationExamplesSpanish = `
   honradez: [onrraˈðeθ],
   clemencia: [kleˈmenθja],
   rencor: [rreŋˈkor],
-  rozar: [rroˈθar]
+  rozar: [rroˈθar],
+  tartamudear: [tartamuðeˈar],
+  alojamiento: [aloxaˈmjento],
+  desprevenido: [despreβeˈniðo],
+  escasear: [eskaseˈar]
 `;
 
 const pronunciationExamplesEnglish = `
