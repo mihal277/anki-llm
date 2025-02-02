@@ -42,7 +42,8 @@ const pronunciationExamplesSpanish = `
   tartamudear: [tartamuðeˈar],
   alojamiento: [aloxaˈmjento],
   desprevenido: [despreβeˈniðo],
-  escasear: [eskaseˈar]
+  escasear: [eskaseˈar],
+  panza: [ˈpanθa]
 `;
 
 const pronunciationExamplesEnglish = `
