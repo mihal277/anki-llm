@@ -123,17 +123,13 @@ export async function POST(request: NextRequest) {
   const audioBuffers: Buffer[] = [];
   for (let i = 0; i < audioDataRequests.length; i += 2) {
     const requests = [
-      streamAudioFromElevenLabs(
-        audioDataRequests[i].content,
-        language,
-        client
-      ),
+      streamAudioFromElevenLabs(audioDataRequests[i].content, language, client),
       // If there's an odd number of requests, the last batch will only have one request
       i + 1 < audioDataRequests.length
         ? streamAudioFromElevenLabs(
             audioDataRequests[i + 1].content,
             language,
-            client
+            client,
           )
         : null,
     ].filter((req): req is Promise<Buffer> => req !== null);

@@ -13,8 +13,15 @@ export const makeAnkiImportableCSV = (
       "#deck column:3",
       "#tags column:4",
     ].join("\n") + "\n";
+  const maxSelectedCardsPerNote = Math.max(
+    ...ankiNotes.map(
+      (n) => n.cards.filter((c) => c.selected_for_export).length,
+    ),
+  );
   return (
     header +
-    ankiNotes.map((note) => ankiNoteToCSVRow(note, deckName)).join("\n")
+    ankiNotes
+      .map((note) => ankiNoteToCSVRow(note, deckName, maxSelectedCardsPerNote))
+      .join("\n")
   );
 };
