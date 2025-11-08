@@ -1,3 +1,4 @@
+import internal from "stream";
 import { AudioDataRequest, mapContentToMp3FileName } from "../audio";
 import { AnkiCard, applyUniqueMp3NamesToCards } from "./card";
 import { v4 as uuid } from "uuid";
@@ -34,7 +35,11 @@ const getAnkiNoteType = (ankiNote: AnkiNote): AnkiNoteType => {
   return noteTypes[selectedForExportCardsLen - 1] as AnkiNoteType;
 };
 
-export function ankiNoteToCSVRow(ankiNote: AnkiNote, deckName: string): string {
+export function ankiNoteToCSVRow(
+  ankiNote: AnkiNote,
+  deckName: string,
+  maxSelectedCardsPerNote: number,
+): string {
   const guid = uuid();
   const noteType = getAnkiNoteType(ankiNote).valueOf();
   const tags = "";
@@ -43,7 +48,12 @@ export function ankiNoteToCSVRow(ankiNote: AnkiNote, deckName: string): string {
   const cardColumns = cardsSelectedForExport.map(
     (card) => `${card.front.contentHTML}\t${card.back.contentHTML}`,
   );
-  return [guid, noteType, deckName, tags, ...cardColumns].join("\t");
+
+  const emptyColumnsCount =
+    maxSelectedCardsPerNote - cardsSelectedForExport.length;
+  const padding = "\t\t".repeat(emptyColumnsCount);
+
+  return [guid, noteType, deckName, tags, ...cardColumns].join("\t") + padding;
 }
 
 function getAllAudioDataRequestsOfAnkiNote(
