@@ -9,6 +9,8 @@ import {
   NoteGanarationStatus,
   NoteGenerationState,
 } from "@/app/create-notes/note-generation-enums";
+import { AnkiCard } from "@/app/anki/card";
+import { Badge } from "../ui/badge";
 
 const stripMp3TagFromAnkiCardContent = (content: string): string => {
   return content.replace(/\[sound:[^\]]+\.mp3\]/g, "").trim();
@@ -61,12 +63,16 @@ export function AnkiCardsPicker({
   setNoteGenerationState,
 }: AnkiCardsPickerProps) {
   const generatedNote = noteGenerationState.generatedNote!!;
+
   const handleCardClick = (index: number) => {
-    const updatedCards = generatedNote.cards.map((card, i) =>
-      i === index
-        ? { ...card, selected_for_export: !card.selected_for_export }
-        : card,
-    );
+    const updatedCards = generatedNote.cards.map((card, i) => {
+      if (i !== index) return card;
+
+      return {
+        ...card,
+        selectedForExportAt: card.selectedForExportAt ? null : new Date(),
+      };
+    }) as AnkiCard[];
     const updatedNote = { ...generatedNote, cards: updatedCards };
     setNoteGenerationState({
       ...noteGenerationState,
@@ -76,6 +82,8 @@ export function AnkiCardsPicker({
 
   const searchParams = useSearchParams();
   const deckId = Number(searchParams.get("deckId")!!);
+
+  const cardsOrderMap = buildSelectedOrderMap(generatedNote.cards);
 
   return (
     <div>
@@ -87,10 +95,16 @@ export function AnkiCardsPicker({
             className="cursor-pointer"
           >
             <Card
-              className={`w-64 h-64 ${
-                card.selected_for_export ? "outline outline-4" : "border"
+              className={`relative w-64 h-64 ${
+                card.selectedForExportAt ? "outline outline-4" : "border"
               }`}
             >
+              {cardsOrderMap.get(i) && (
+                <Badge className="absolute bottom-1 right-1 px-0.5 py-0.1">
+                  {cardsOrderMap.get(i)}
+                </Badge>
+              )}
+
               <CardContent className="flex flex-col justify-between h-full">
                 <div
                   className="text-center"
@@ -150,5 +164,21 @@ export function AnkiCardsPicker({
         </Button>
       </div>
     </div>
+  );
+}
+
+function buildSelectedOrderMap(
+  cards: { selectedForExportAt?: Date | null }[],
+): Map<number, number> {
+  return new Map(
+    cards
+      .map((c, i) =>
+        c.selectedForExportAt
+          ? { i, t: c.selectedForExportAt.getTime() }
+          : null,
+      )
+      .filter((x): x is { i: number; t: number } => !!x)
+      .sort((a, b) => a.t - b.t)
+      .map((x, idx) => [x.i, idx + 1]),
   );
 }

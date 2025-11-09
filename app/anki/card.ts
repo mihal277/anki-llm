@@ -12,7 +12,7 @@ export interface AnkiCard {
   // The user then selects some of them to be imported into Anki.
   // But the other cards have to remain stored becaue a user
   // can edit the note by selecting more cards.
-  selected_for_export: boolean;
+  selectedForExportAt: Date | null;
 }
 
 function applyUniqueMp3NamesToCardSide(

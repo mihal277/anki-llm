@@ -35,7 +35,7 @@ import {
 } from "@/app/create-notes/note-generation-enums";
 
 const getNumberOfCards = (ankiNote: AnkiNote): number => {
-  return ankiNote.cards.filter((card) => card.selected_for_export === true)
+  return ankiNote.cards.filter((card) => card.selectedForExportAt !== null)
     .length;
 };
 
