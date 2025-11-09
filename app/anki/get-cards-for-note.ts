@@ -48,13 +48,13 @@ export const getDifferentKindsOfCards = (
   const clozeCard1: AnkiCard = {
     front: getClozeCard1Front(rawExampleSentence, easyDefinition),
     back: getClozeCard1Back(rawExampleSentence, language),
-    selected_for_export: false,
+    selectedForExportAt: null,
   };
 
   const clozeCard2: AnkiCard = {
     front: getClozeCard2Front(rawExampleSentence, nativeLangWordMeaning),
     back: getClozeCard2Back(rawExampleSentence, language),
-    selected_for_export: false,
+    selectedForExportAt: null,
   };
 
   const sentenceCard: AnkiCard = {
@@ -65,13 +65,13 @@ export const getDifferentKindsOfCards = (
       easyDefinition,
       language,
     ),
-    selected_for_export: false,
+    selectedForExportAt: null,
   };
 
   const meaningCard: AnkiCard = {
     front: getMeaningCardFront(nativeLangWordMeaning),
     back: getMeaningCardBack(wordOrExpression, pronunciation, language),
-    selected_for_export: false,
+    selectedForExportAt: null,
   };
 
   const definitionCard1: AnkiCard = {
@@ -82,13 +82,13 @@ export const getDifferentKindsOfCards = (
       rawExampleSentence,
       language,
     ),
-    selected_for_export: false,
+    selectedForExportAt: null,
   };
 
   const definitionCard2: AnkiCard = {
     front: getDefinitionCard2Front(easyDefinition),
     back: getDefinitionCard2Back(wordOrExpression, pronunciation, language),
-    selected_for_export: false,
+    selectedForExportAt: null,
   };
 
   const targetWordCard1: AnkiCard = {
@@ -98,7 +98,7 @@ export const getDifferentKindsOfCards = (
       rawExampleSentence,
       language,
     ),
-    selected_for_export: false,
+    selectedForExportAt: null,
   };
 
   const targetWordCard2: AnkiCard = {
@@ -109,13 +109,13 @@ export const getDifferentKindsOfCards = (
       rawExampleSentence,
       language,
     ),
-    selected_for_export: false,
+    selectedForExportAt: null,
   };
 
   const targetWordCard3: AnkiCard = {
     front: getTargetWordCard3Front(wordOrExpression, pronunciation, language),
     back: getTargetWordCard3Back(easyDefinition, rawExampleSentence, language),
-    selected_for_export: false,
+    selectedForExportAt: null,
   };
 
   return [

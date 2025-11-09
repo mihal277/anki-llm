@@ -1,6 +1,5 @@
-import internal from "stream";
 import { AudioDataRequest, mapContentToMp3FileName } from "../audio";
-import { AnkiCard, applyUniqueMp3NamesToCards } from "./card";
+import { AnkiCard, AnkiCardSideData, applyUniqueMp3NamesToCards } from "./card";
 import { v4 as uuid } from "uuid";
 
 export enum AnkiNoteType {
@@ -19,8 +18,13 @@ export interface AnkiNote {
   cards: AnkiCard[];
 }
 
-const getCardsSelectedForExport = (ankiNote: AnkiNote): AnkiCard[] => {
-  return ankiNote.cards.filter((card) => card.selected_for_export);
+const getCardsSelectedForExport = (
+  ankiNote: AnkiNote,
+): (AnkiCard & { selectedForExportAt: Date })[] => {
+  return ankiNote.cards.filter(
+    (card): card is AnkiCard & { selectedForExportAt: Date } =>
+      card.selectedForExportAt !== null,
+  );
 };
 
 const getAnkiNoteType = (ankiNote: AnkiNote): AnkiNoteType => {
@@ -44,7 +48,9 @@ export function ankiNoteToCSVRow(
   const noteType = getAnkiNoteType(ankiNote).valueOf();
   const tags = "";
 
-  const cardsSelectedForExport = getCardsSelectedForExport(ankiNote);
+  const cardsSelectedForExport = getCardsSelectedForExport(ankiNote).sort(
+    (a, b) => a.selectedForExportAt.getTime() - b.selectedForExportAt.getTime(),
+  );
   const cardColumns = cardsSelectedForExport.map(
     (card) => `${card.front.contentHTML}\t${card.back.contentHTML}`,
   );

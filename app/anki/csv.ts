@@ -15,7 +15,7 @@ export const makeAnkiImportableCSV = (
     ].join("\n") + "\n";
   const maxSelectedCardsPerNote = Math.max(
     ...ankiNotes.map(
-      (n) => n.cards.filter((c) => c.selected_for_export).length,
+      (n) => n.cards.filter((c) => c.selectedForExportAt !== null).length,
     ),
   );
   return (
